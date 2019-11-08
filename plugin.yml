@@ -1,0 +1,76 @@
+name: PlotArea
+main: mohagames\PlotArea\Main
+version: 4.4.0
+api: 3.0.0
+author: Mohagames205
+description: PlotArea
+
+commands:
+  saveplot:
+    description: Plot opslagen
+    usage: "Usage: /saveplot <plotnaam>"
+    permission: pa.saveplot
+  plotinfo:
+    description: Geeft info over een plot
+    usage: "Usage: /plotinfo"
+    permission: pa.plotinfo
+  plotwand:
+    description: Plottool
+    usage: "Usage: /plotwand"
+    permission: pa.plotwand
+  plot:
+    description: Plot instellingen
+    usage: "Usage: /plot <arg>"
+    permission: pa.plotcmd
+  flushperms:
+    description: "Flushes all the permissions"
+
+permissions:
+  pa:
+    default: op
+    children:
+      pa.staff:
+        default: op
+      pa.saveplot:
+        description: "Plot opslagen"
+        default: op
+      pa.plotinfo:
+        description: "Geeft info over plot"
+        default: true
+      pa.plotwand:
+        description: "plotwand"
+        default: op
+      pa.plotcmd:
+        description: "Plot command gebruiken"
+        default: true
+      pa.plot.addmember:
+        description: "permissie om lid toe te voegen."
+        default: op
+      pa.plot.removemember:
+        description: "permissie om lid toe te verwijderen."
+        default: op
+      pa.plot.delete:
+        description: "Een plot deleten"
+        default: op
+      pa.plot.setowner:
+        description: "Owner instellen"
+        default: op
+      pa.plot.setflag:
+        description: Allows the user to use the /plot setflag command
+        default: op
+      pa.plot.publicchest:
+        default: op
+      pa.plot.setmaxmembers:
+        default: op
+      pa.break:
+        description: "Hiermee kan je dingen breken"
+        default: op
+      pa.plot.group.creategroup:
+        default: op
+      pa.plot.group.joingroup:
+        default: op
+      pa.plot.group.deletegroup:
+        default: op
+      pa.plot.group.leavegroup:
+        default: op
+
