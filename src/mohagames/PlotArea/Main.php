@@ -572,6 +572,7 @@ class Main extends PluginBase implements Listener
     }
 
     /**
+     * @deprecated
      * TODO: Wanneer een vierkant (plot) botst met een ander vierkant (ander plot) dan wordt dit niet getriggered.
      * TODO: Deze method moven naar de Plot class @see Plot
      */
@@ -615,7 +616,7 @@ class Main extends PluginBase implements Listener
     }
 
     /**
-     * TODO: Deze method moven naar de Plot class en statisch maken. @see Plot
+     * @deprecated TODO: Deze method moven naar de Plot class en statisch maken. @see Plot
      */
     public function getUserPlots(Player $player)
     {
@@ -643,7 +644,7 @@ class Main extends PluginBase implements Listener
     }
 
     /**
-     * TODO: Deze method moven naar de Plot class en statisch maken. @see Plot
+     * @deprecated TODO: Deze method moven naar de Plot class en statisch maken. @see Plot
      */
     public function getUserPlotNames(Player $player)
     {
