@@ -4,6 +4,7 @@ namespace mohagames\PlotArea\tasks;
 
 
 use mohagames\PlotArea\Main;
+use mohagames\PlotArea\utils\Plot;
 use pocketmine\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat;
@@ -20,12 +21,9 @@ class PositioningTask extends Task{
     public function onRun(int $currentTick){
 
         foreach($this->main->getServer()->getOnlinePlayers() as $player){
-            $plot = $this->main->getPlot($player);
+            $plot = Plot::get($player);
 
             if($plot !== null){
-                if($plot->isGrouped()) {
-                    $plot = $plot->getGroup()->getMasterPlot();
-                }
                 if(!isset($this->isInPlot[$player->getName()])){
                     $this->isInPlot[$player->getName()] = null;
                 }
