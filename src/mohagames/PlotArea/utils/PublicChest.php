@@ -35,8 +35,12 @@ class PublicChest
         return $chest;
     }
 
-    /*
-     * DEPRECATED niet gebruiken want deze functie returned ALTIJD true omdat ik dom ben.
+    public function getStatus(){
+
+    }
+
+    /**
+     * @deprecated  niet gebruiken want deze functie returned ALTIJD true omdat ik dom ben.
      */
     public function isPublic() : bool{
         $loc = $this->getLocation();
@@ -50,8 +54,12 @@ class PublicChest
         }
     }
 
+    public function isPrivate() : bool{
+        return true;
+    }
+
     public function getPlot() : Plot{
-        return Main::getInstance()->getPlotById($this->getPlotId());
+        return Plot::getPlotById($this->getPlotId());
     }
 
     public function getPlotId() : int{
