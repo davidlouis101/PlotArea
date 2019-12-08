@@ -87,8 +87,8 @@ Deze versie bevat breaking API-changes
 * De ``Main::isColliding`` method is verwijderd.
 * Alle deprecated methods zijn verwijderd.
 
-## 4.5.0
-Deze update zal (hopelijk) een nieuwe Location class bevatten!
+## 5.0.0BETA
+* Een experimenteel EventCaller systeem. Nu kunnen andere plugins acties laten gebeuren wanneer bepaalde events worden getriggered door de Plot Plugin. Gelieve de Wiki te raadplegen om te zien hoe dit werkt.
 
-## 5.0.0
-Deze update zal (hopelijk) een eventbased system hebben
+## 5.1.0BETA
+* De `registerListener()` method in de EventCaller class is nu statisch, ziet er beter uit.
