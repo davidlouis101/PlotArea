@@ -4,6 +4,8 @@ namespace mohagames\PlotArea;
 
 
 use mohagames\LevelAPI\utils\LevelManager;
+use mohagames\PlotArea\events\internal\EventCaller;
+use mohagames\PlotArea\events\PlotAddMemberEvent;
 use mohagames\PlotArea\listener\EventListener;
 use mohagames\PlotArea\tasks\PositioningTask;
 use mohagames\PlotArea\utils\Group;
@@ -40,6 +42,7 @@ class Main extends PluginBase implements Listener
 
     public function onEnable(): void
     {
+
         Main::$instance = $this;
         new EventListener();
 
@@ -53,10 +56,9 @@ class Main extends PluginBase implements Listener
 
         //Dit maakt de databases aan als ze nog niet bestaan
         $this->db = new SQLite3($this->getDataFolder() . "PlotArea.db");
-        $this->db->query("CREATE TABLE IF NOT EXISTS chests (chest_id INTEGER PRIMARY KEY AUTOINCREMENT, chest_location TEXT,chest_world TEXT, plot_id INTEGER)");
+        $this->db->query("CREATE TABLE IF NOT EXISTS chests (chest_id INTEGER PRIMARY KEY AUTOINCREMENT, chest_location TEXT,chest_world TEXT, status TEXT, plot_id INTEGER)");
         $this->db->query("CREATE TABLE IF NOT EXISTS plots(plot_id INTEGER PRIMARY KEY AUTOINCREMENT,plot_name TEXT,plot_owner TEXT, plot_members TEXT, plot_location TEXT, plot_world TEXT, plot_permissions TEXT default NULL,max_members INTEGER, group_name TEXT)");
         $this->db->query("CREATE TABLE IF NOT EXISTS groups(group_id INTEGER PRIMARY KEY AUTOINCREMENT, group_name TEXT, master_plot TEXT)");
-
         //dit registreert de events
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
 
@@ -115,7 +117,7 @@ class Main extends PluginBase implements Listener
                     $x_size = $size[0];
                     $z_size = $size[1];
 
-                    if ($sender->hasPermission("pa.staff")) {
+                    if ($sender->hasPermission("pa.staff.devinfo")) {
                         $plot->isGrouped() ? $grpd = "\n§3Grouped: §a✓" : $grpd = "\n§3Grouped: §c✗";
                     } else {
                         $grpd = null;
@@ -142,7 +144,7 @@ class Main extends PluginBase implements Listener
                         case "setowner":
                             $plot = Plot::get($sender);
                             if ($plot !== null) {
-                                if ($sender->hasPermission("pa.plot.setowner")) {
+                                if ($sender->hasPermission("pa.staff.plot.setowner")) {
                                     if (isset($args[1])) {
                                         if (!empty($args[1])) {
                                             $owner = $args[1];
@@ -164,7 +166,7 @@ class Main extends PluginBase implements Listener
                                         }
                                         $owner = null;
                                     }
-                                    $ans = $plot->setOwner($owner);
+                                    $ans = $plot->setOwner($owner, $sender);
                                     if($ans) {
                                         $sender->sendMessage(TextFormat::GREEN . $owner . " §2is nu de eigenaar van plot §a" . $plot->getName());
                                     }
@@ -183,8 +185,8 @@ class Main extends PluginBase implements Listener
                             if (isset($args[1])) {
                                 $plot = Plot::get($sender);
                                 if ($plot !== null) {
-                                    if ($sender->hasPermission("pa.plot.addmember") || $plot->isOwner($sender->getName())) {
-                                        $ans = $plot->addMember($args[1]);
+                                    if ($sender->hasPermission("pa.staff.plot.addmember") || $plot->isOwner($sender->getName())) {
+                                        $ans = $plot->addMember($args[1], $sender);
                                         if ($ans) {
                                             $sender->sendMessage("§aU hebt succesvol een lid toegevoegd");
                                         }
@@ -218,8 +220,8 @@ class Main extends PluginBase implements Listener
                             if (isset($args[1])) {
                                 $plot = Plot::get($sender);
                                 if ($plot !== null) {
-                                    if ($sender->hasPermission("pa.plot.removemember") || $plot->isOwner($sender->getName())) {
-                                        $ans = $plot->removeMember($args[1]);
+                                    if ($sender->hasPermission("pa.staff.plot.removemember") || $plot->isOwner($sender->getName())) {
+                                        $ans = $plot->removeMember($args[1], $sender);
                                         $ans ? $msg = "§aHet lid is succesvol verwijderd" : $msg = "§4Deze speler is geen lid van het plot";
                                         $sender->sendMessage($msg);
                                     } else {
@@ -235,8 +237,8 @@ class Main extends PluginBase implements Listener
                             break;
 
                         case "delete":
-                            if ($sender->hasPermission("pa.plot.delete")) {
-                                $plot = Plot::get($sender);
+                            if ($sender->hasPermission("pa.staff.plot.delete")) {
+                                $plot = Plot::get($sender, false);
                                 if ($plot !== null) {
                                     $plot->delete();
                                     $sender->sendMessage("§aHet plot is succesvol verwijderd");
@@ -255,10 +257,7 @@ class Main extends PluginBase implements Listener
                             if (isset($args[1]) && isset($args[2]) && isset($args[3])) {
                                 $plot = Plot::get($sender);
                                 if ($plot !== null) {
-                                    if ($plot->isGrouped()) {
-                                        $plot = $plot->getGroup()->getMasterPlot();
-                                    }
-                                    if ($sender->hasPermission("pa.plot.setflag") || $plot->isOwner($sender->getName())) {
+                                    if ($sender->hasPermission("pa.staff.plot.setflag") || $plot->isOwner($sender->getName())) {
                                         if (strtolower($args[3]) == "false") {
                                             $bool = false;
                                         }
@@ -290,7 +289,7 @@ class Main extends PluginBase implements Listener
                         case "flags":
                             $plot = Plot::get($sender);
                             if($plot !== null){
-                                if ($sender->hasPermission("pa.plot.flags") || $plot->isOwner($sender->getName())) {
+                                if ($sender->hasPermission("pa.staff.plot.flags") || $plot->isOwner($sender->getName())) {
                                     $perm_mngr = new PermissionManager($plot);
                                     $perms = $perm_mngr->permission_list;
                                     $perms_text = "§bFlags die je per gebruiker kan instellen:\n";
@@ -305,7 +304,7 @@ class Main extends PluginBase implements Listener
                         case "publicchest":
                             $plot = Plot::get($sender);
                             if ($plot !== null) {
-                                if ($sender->hasPermission("pa.plot.publicchest") || $plot->isOwner($sender->getName())) {
+                                if ($sender->hasPermission("pa.staff.plot.publicchest") || $plot->isOwner($sender->getName())) {
                                     $this->chest_register[$sender->getName()] = true;
                                     $sender->sendMessage("§aGelieve op de kist te klikken die je openbaar/privé wilt maken.");
                                 } else {
@@ -320,7 +319,7 @@ class Main extends PluginBase implements Listener
                             if (isset($args[1])) {
                                 $plot = Plot::get($sender);
                                 if ($plot !== null) {
-                                    if ($plot->isOwner($sender->getName()) || $sender->hasPermission("pa.plot.userinfo")) {
+                                    if ($plot->isOwner($sender->getName()) || $sender->hasPermission("pa.staff.plot.userinfo")) {
                                         $perms = $plot->getPlayerPermissions($args[1]);
                                         $message = TextFormat::GREEN . $args[1] . ":\n";
                                         if ($perms !== null) {
@@ -346,7 +345,7 @@ class Main extends PluginBase implements Listener
 
 
                         case "creategroup":
-                            if ($sender->hasPermission("pa.plot.group.creategroup")) {
+                            if ($sender->hasPermission("pa.staff.plot.creategroup")) {
                                 if (isset($args[1]) && isset($args[2])) {
                                     $plot = Plot::get($sender);
                                     $link_plot = Plot::getPlotByName($args[2]);
@@ -371,7 +370,7 @@ class Main extends PluginBase implements Listener
                             break;
 
                         case "joingroup":
-                            if ($sender->hasPermission("pa.plot.group.joingroup")) {
+                            if ($sender->hasPermission("pa.staff.plot.joingroup")) {
                                 if (isset($args[1])) {
                                     $plot = Plot::get($sender);
                                     if ($plot !== null) {
@@ -394,7 +393,7 @@ class Main extends PluginBase implements Listener
                             break;
 
                         case "leavegroup":
-                            if ($sender->hasPermission("pa.plot.group.leavegroup")) {
+                            if ($sender->hasPermission("pa.staff.plot.leavegroup")) {
                                 $plot = Plot::get($sender);
                                 if ($plot !== null && $plot->isGrouped()) {
                                     $plot->getGroup()->removeFromGroup($plot);
@@ -409,7 +408,7 @@ class Main extends PluginBase implements Listener
 
 
                         case "deletegroup":
-                            if ($sender->hasPermission("pa.plot.group.deletegroup")) {
+                            if ($sender->hasPermission("pa.staff.plot.deletegroup")) {
                                 if (!isset($args[1])) {
                                     $plot = Plot::get($sender);
                                     if ($plot !== null && $plot->isGrouped()) {
@@ -428,7 +427,7 @@ class Main extends PluginBase implements Listener
                             break;
 
                         case "setmaxmembers":
-                            if ($sender->hasPermission("pa.plot.setmaxmembers")) {
+                            if ($sender->hasPermission("pa.staff.plot.setmaxmembers")) {
                                 if (isset($args[1])) {
                                     if (is_numeric($args[1])) {
                                         $plot = Plot::get($sender);
@@ -452,7 +451,7 @@ class Main extends PluginBase implements Listener
                             $plot = Plot::get($sender);
                             if ($plot !== null) {
                                 if ($plot->isOwner($sender->getName()) || $sender->hasPermission("pa.staff")) {
-                                    $commands .= "§c/plot flags §4Geeft een lijst van alle flags die je kan gebruiken. §c/plot publicchest §4Maakt een kist openbaar/privé §c/plot addmember [lid] §4Voegt een lid toe aan het plot\n§c/plot removemember [lid] §4Verwijdert een lid van het plot\n§c/plot setflag [speler] [flag] [true/false] §4Permissions per lid aanpassen\n§c/plot userinfo [speler] §4Dit heeft informatie over een bepaalde gebruiker.";
+                                    $commands .= "§c/plot flags §4Geeft een lijst van alle flags die je kan gebruiken. §c/plot publicchest §4Maakt een kist openbaar/privé\n §c/plot addmember [lid] §4Voegt een lid toe aan het plot\n§c/plot removemember [lid] §4Verwijdert een lid van het plot\n§c/plot setflag [speler] [flag] [true/false] §4Permissions per lid aanpassen\n§c/plot userinfo [speler] §4Dit heeft informatie over een bepaalde gebruiker.";
                                 }
                             }
                             if ($sender->hasPermission("pa.staff")) {
@@ -462,13 +461,15 @@ class Main extends PluginBase implements Listener
                                 $commands = "§cOepsie! Er zijn geen commands die je kan gebruiken.";
                             }
                             $sender->sendMessage("§4Gelieve een geldige command te gebruiken.\n$commands");
+
+                            break;
                     }
                 } else {
                     $commands = "";
                     $plot = Plot::get($sender);
                     if ($plot !== null) {
                         if ($plot->isOwner($sender->getName()) || $sender->hasPermission("pa.staff")) {
-                            $commands .= "§c/plot flags §4Geeft een lijst van alle flags die je kan gebruiken. §c/plot publicchest §4Maakt een kist openbaar/privé §c/plot addmember [lid] §4Voegt een lid toe aan het plot\n§c/plot removemember [lid] §4Verwijdert een lid van het plot\n§c/plot setflag [speler] [flag] [true/false] §4Permissions per lid aanpassen\n§c/plot userinfo [speler] §4Dit heeft informatie over een bepaalde gebruiker.";
+                            $commands .= "§c/plot flags §4Geeft een lijst van alle flags die je kan gebruiken. §c/plot publicchest §4Maakt een kist openbaar/privé\n §c/plot addmember [lid] §4Voegt een lid toe aan het plot\n§c/plot removemember [lid] §4Verwijdert een lid van het plot\n§c/plot setflag [speler] [flag] [true/false] §4Permissions per lid aanpassen\n§c/plot userinfo [speler] §4Dit heeft informatie over een bepaalde gebruiker.";
                         }
                     }
                     if ($sender->hasPermission("pa.staff")) {
@@ -479,12 +480,14 @@ class Main extends PluginBase implements Listener
                     }
                     $sender->sendMessage("§4Gelieve een geldige command te gebruiken.\n$commands");
                 }
+
+                return true;
+
             case "flushperms":
                 if($sender instanceof ConsoleCommandSender){
                     PermissionManager::resetAllPlotPermissions();
                     $sender->sendMessage("Perms have been cleared succesfully!");
                 }
-
                 return true;
             default:
                 return false;
@@ -501,7 +504,7 @@ class Main extends PluginBase implements Listener
                 $x = $event->getBlock()->getX();
                 $y = $event->getBlock()->getY();
                 $z = $event->getBlock()->getZ();
-                if (!$this->isColliding($block)) {
+                if (Plot::get($block) == null) {
                     $this->pos_2[$event->getPlayer()->getName()] = array("x" => $x, "y" => $y, "z" => $z);
                     $event->getPlayer()->sendMessage("§aPOS2: §f(§a" . $x . "§f,§a" . $y . "§f,§a" . $z . "§f)");
                 } else {
@@ -521,7 +524,7 @@ class Main extends PluginBase implements Listener
             $x = $event->getBlock()->getX();
             $y = $event->getBlock()->getY();
             $z = $event->getBlock()->getZ();
-            if (!$this->isColliding($block)) {
+            if (Plot::get($block) == null) {
                 $this->pos_1[$event->getPlayer()->getName()] = array("x" => $x, "y" => $y, "z" => $z);
                 $event->getPlayer()->sendMessage("§aPOS1: §f(§a" . $x . "§f,§a" . $y . "§f,§a" . $z . "§f)");
             } else {
@@ -531,10 +534,12 @@ class Main extends PluginBase implements Listener
     }
 
     /**
-     * TODO: Hiervan een statische method maken in de Plot class. @see Plot
+     * @deprecated gelieve de nieuwe Plot::get() te gebruiken.
+     * @see Plot::get()
      */
     public function getPlot(Position $position)
     {
+        $this->getLogger()->warning("The method Main::getPlot() is deprecated. Please use the new Plot::get() method to get a plot!");
         $result = $this->db->query("SELECT * FROM plots");
         while ($row = $result->fetchArray()) {
             $plot_level = null;
@@ -572,9 +577,8 @@ class Main extends PluginBase implements Listener
     }
 
     /**
-     * @deprecated
-     * TODO: Wanneer een vierkant (plot) botst met een ander vierkant (ander plot) dan wordt dit niet getriggered.
-     * TODO: Deze method moven naar de Plot class @see Plot
+     * @deprecated Deze method wordt binnenkort verwijderd.
+     * @see Plot::get() Gelieve deze method te gebruiken.
      */
 
     public function isColliding(Position $position)
@@ -616,7 +620,7 @@ class Main extends PluginBase implements Listener
     }
 
     /**
-     * @deprecated TODO: Deze method moven naar de Plot class en statisch maken. @see Plot
+     * @deprecated Deze method wordt binnenkort verwijderd en vervangen door een statci method in de Plot class
      */
     public function getUserPlots(Player $player)
     {
@@ -643,75 +647,6 @@ class Main extends PluginBase implements Listener
         return $plots;
     }
 
-    /**
-     * @deprecated TODO: Deze method moven naar de Plot class en statisch maken. @see Plot
-     */
-    public function getUserPlotNames(Player $player)
-    {
-        $plots = $this->getUserPlots($player);
-
-        foreach ($plots as $plot) {
-            $plot_names[] = $plot->getName();
-        }
-
-        return $plot_names;
-    }
-
-    /**
-     * @deprecated gemoved naar Plot class @see Plot
-     */
-    public function getPlotById(int $id)
-    {
-        $stmt = $this->db->prepare("SELECT * FROM plots WHERE plot_id = :id");
-        $stmt->bindParam("id", $id, SQLITE3_INTEGER);
-        $res = $stmt->execute();
-        while ($row = $res->fetchArray()) {
-            if($this->getServer()->isLevelLoaded($row["plot_world"])){
-                $world = $this->getServer()->getLevelByName($row["plot_world"]);
-            }
-            elseif($this->getServer()->isLevelGenerated($row["plot_world"])){
-                if($this->getServer()->loadLevel($row["plot_world"])){
-                    $world = $this->getServer()->getLevelByName($row["plot_world"]);
-                }
-            }
-            if($world == null){
-                return null;
-            }
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-        }
-        return $plot;
-    }
-    /**
-     * @deprecated gemoved naar Plot class @see Plot
-     */
-    public function getPlotByName(string $name): ?Plot
-    {
-        $name = strtolower($name);
-        $stmt = $this->db->prepare("SELECT * FROM plots WHERE lower(plot_name) = :plot_name");
-        $stmt->bindParam("plot_name", $name, SQLITE3_TEXT);
-        $res = $stmt->execute();
-        while ($row = $res->fetchArray()) {
-            if($this->getServer()->isLevelLoaded($row["plot_world"])){
-                $world = $this->getServer()->getLevelByName($row["plot_world"]);
-            }
-            elseif($this->getServer()->isLevelGenerated($row["plot_world"])){
-                if($this->getServer()->loadLevel($row["plot_world"])){
-                    $world = $this->getServer()->getLevelByName($row["plot_world"]);
-                }
-            }
-            if($world == null){
-                return null;
-            }
-
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-        }
-        if (isset($plot)) {
-            return $plot;
-        } else {
-            return null;
-        }
-
-    }
 
     public function chestInteraction(PlayerInteractEvent $e)
     {
@@ -720,9 +655,12 @@ class Main extends PluginBase implements Listener
             if (isset($this->chest_register[$e->getPlayer()->getName()])) {
                 $chest = PublicChest::getChest($block);
                 if ($chest == null) {
-                    PublicChest::save($block, $block->getLevel(), Plot::get($block));
-                    $e->getPlayer()->sendMessage("§aDe kist is openbaar gemaakt!");
-                    $e->setCancelled();
+                    $plot = Plot::get($block);
+                    if($plot !== null){
+                        PublicChest::save($block, $block->getLevel(), $plot);
+                        $e->getPlayer()->sendMessage("§aDe kist is openbaar gemaakt!");
+                        $e->setCancelled();
+                    }
                 } else {
                     $chest->delete();
                     $e->getPlayer()->sendMessage("§aDe kist is weer privé gemaakt!");
