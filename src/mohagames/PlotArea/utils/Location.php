@@ -2,10 +2,7 @@
 
 
 namespace mohagames\PlotArea\utils;
-/*
- * Deze class is deprecated en zal vervangen worden omdat die kut is
- * Dus probeer deze class zoveel mogelijk te vermijden en gewoon gebruik te maken van Vector3
- */
+
 
 class Location{
 
@@ -30,8 +27,8 @@ class Location{
 
     public function getCenter(){
         $location = $this->calculateCoords();
-        $mid_x = ($location->getPos1()[0] + $location->getPos2()[0]) / 2;
-        $mid_z = ($location->getPos1()[1] + $location->getPos2()[1]) / 2;
+        $mid_x = ($location->getPos1()["x"] + $location->getPos2()["x"]) / 2;
+        $mid_z = ($location->getPos1()["z"] + $location->getPos2()["z"]) / 2;
         return array($mid_x, $mid_z);
     }
 

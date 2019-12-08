@@ -47,21 +47,20 @@
 
 ## 3.1.0
 * Added a new method `$plot->getArrayPrice()`, this returns an array in the following format. `array("item_id" => $item_id, "count" => $count)`
-* Added the /setprice <itemid:count\> command
+* Added the /setprice <itemid:count> command
 
-## 3.2.0
-
+##3.2.0
 * Improved the economy system (WIP)
 
-## 3.3.0 
+#3.3.0 
 * Removed all the economy features
 
-## 4.0.0
+#4.0.0
 * Plot detection will also depend on the y-coord
 * Plots now can be linked together to create one giant plot
 * Added a permission system
 
-## 4.1.0
+#4.1.0
 * PublicChests toegevoegd, vanaf nu kan een plot eigenaar een kist openbaar maken. Dit wil zeggen dat iedereen de kist kan openen
 * Een paar internal changes, de manier waarop een plot wordt verwijderd is veranderd
 * Grouping methods gemoved naar een andere class (gisteren gedaan)
@@ -72,18 +71,24 @@
 * Er wordt `x`xp afgenomen als je bent verwijderd als eigenaar van een plot
 * PlayerPermissions worden allemaal ingesteld naar False wanneer een speler geen lid meer is van een plot
 
-## 4.2.0
-* Moved Plot related methods to the plot Class, you can now use Plot::get(), Plot::getPlotByName(), Plot::getPlotById() without having to make an instance of the Plot class.
+#4.2.0
+* Nieuwe static functies in de Plot class, dus nu kan je gewoon `Plot::get()` gebruiken ipv `Main::getInstance()->getPlot()`
 
-## 4.3.0
-* Fixed command permissions
+#4.3.0
+* Altay functies verwijderd
+* Code cleanup
 
-## 4.4.0
-* Fixed some issues
+#4.4.0
+Deze versie bevat breaking API-changes
+* `Plot::get(Location $pos, bool $grouping)` heeft vanaf nu een extra parameter. Hiermee kan je kiezen als je het plot zelf wilt krijgen of het masterplot van de group wilt krijgen
+* De manier waarop Grouping werkt is veranderd, vanaf nu moet je niet steeds checken als de Plot gegrouped is. ``Plot::get()`` returned standaard de masterplot
+* Plots deleten is aangepast, wanneer het plot een masterplot is en deel is van een group dan worden alle subplots verwijderd en de group ook.
+* Permissions zijn aangepast
+* De ``Main::isColliding`` method is verwijderd.
+* Alle deprecated methods zijn verwijderd.
 
-## NEXT 4.5.0
-* Remove the LevelAPI dependency and move everything to an external plugin
+#4.5.0
+Deze update zal (hopelijk) een nieuwe Location class bevatten!
 
-## NEXT 5.0.0
-* Create an event caller
-
+#5.0.0
+Deze update zal (hopelijk) een eventbased system hebben

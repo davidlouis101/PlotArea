@@ -22,10 +22,6 @@ class Plot extends PermissionManager {
     public $db;
     public $main;
 
-    /*
-     * TODO: $level moet geen Level class zijn maar een string van de levelnaam. Dit maakt het inladen van werelden vele gemakkelijker.
-     */
-
     public function __construct($name, $owner, Level $level, array $location, array $members = array())
     {
         $this->name = $name;
@@ -59,8 +55,7 @@ class Plot extends PermissionManager {
         return new Plot($name, $owner, $level, $location, $members);
     }
 
-    public static function get(Position $position)
-    {
+    public static function get(Position $position, bool $grouping = true) : ?Plot {
         $main = Main::getInstance();
         $result = $main->db->query("SELECT * FROM plots");
         while ($row = $result->fetchArray()) {
@@ -87,15 +82,20 @@ class Plot extends PermissionManager {
             $p_y = $position->getFloorY();
             $p_z = $position->getFloorZ();
             $level = $position->getLevel();
-            $res = false;
-            if ($pos1["y"] == $pos2["y"]) {
-                $res = ($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]);
-            }
+
+            $res = $pos1["y"] == $pos2["y"];
+
             if (($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]) && (($p_y >= $pos1["y"] && $p_y < $pos2["y"]) || $res) && $plot->getLevel() === $level) {
-                return $plot;
+                $found_plot = $plot;
+                if($plot->isGrouped() && $grouping){
+                    $found_plot = $plot->getGroup()->getMasterPlot();
+                }
                 break;
             }
         }
+
+        return isset($found_plot) ? $found_plot : null;
+
     }
 
     public function getPlot() : Plot{
@@ -104,27 +104,20 @@ class Plot extends PermissionManager {
 
     public function getName(){
         $plot_id = $this->getId();
-        if($this->isGrouped()){
-            $name = $this->getGroup()->getName();
+        $stmt = $this->db->prepare("SELECT plot_name FROM plots WHERE plot_id = :plot_id");
+        $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
+        $res = $stmt->execute();
+        while($row = $res->fetchArray()){
+            $name = $row["plot_name"];
         }
-        else{
-            $stmt = $this->db->prepare("SELECT plot_name FROM plots WHERE plot_id = :plot_id");
-            $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
-            $res = $stmt->execute();
-            while($row = $res->fetchArray()){
-                $name = $row["plot_name"];
-            }
-            $stmt->close();
-        }
+        $stmt->close();
 
         return $name;
     }
 
     public function getOwner(){
         $plot_id = $this->getId();
-        if($this->isGrouped()){
-            $plot_id = $this->getGroup()->getMasterPlot()->getId();
-        }
+
         $stmt = $this->db->prepare("SELECT plot_owner FROM plots WHERE plot_id = :plot_id");
         $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
         $res = $stmt->execute();
@@ -137,9 +130,7 @@ class Plot extends PermissionManager {
 
     public function isOwner(string $player) : bool{
         $owner = $this->getOwner();
-        if($this->isGrouped()){
-            $owner = $this->getGroup()->getMasterPlot()->getOwner();
-        }
+
         return strtolower($player) == $owner;
     }
 
@@ -161,9 +152,7 @@ class Plot extends PermissionManager {
 
     public function getMembers(){
         $plot_id = $this->getId();
-        if($this->isGrouped()){
-            $plot_id = $this->getGroup()->getMasterPlot()->getId();
-        }
+
         $stmt = $this->db->prepare("SELECT plot_members FROM plots WHERE plot_id = :plot_id");
         $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
         $res = $stmt->execute();
@@ -176,18 +165,14 @@ class Plot extends PermissionManager {
 
     public function isMember($member) : bool{
         $members = $this->getMembers();
-        if($this->isGrouped()){
-            $members = $this->getGroup()->getMasterPlot()->getMembers();
-        }
+
         $member = strtolower($member);
         return in_array($member, $members);
     }
 
     public function getMembersList(){
         $members = $this->getMembers();
-        if($this->isGrouped()){
-            $members = $this->getGroup()->getMasterPlot()->getMembers();
-        }
+
         if (count($members) == 0) {
             return false;
         } else {
@@ -230,9 +215,6 @@ class Plot extends PermissionManager {
         $lvl = new LevelManager();
         if($lvl->userExists($owner) || is_null($owner)) {
             $plot_id = $this->getId();
-            if ($this->isGrouped()) {
-                $plot_id = $this->getGroup()->getMasterPlot()->getId();
-            }
             $stmt = $this->db->prepare("UPDATE plots SET plot_owner = :plot_owner WHERE plot_id = :plot_id");
             $stmt->bindParam("plot_owner", $owner, SQLITE3_TEXT);
             $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
@@ -251,11 +233,6 @@ class Plot extends PermissionManager {
             $members = $this->getMembers();
             $plot_id = $this->getId();
             $plot = $this->getPlot();
-            if ($this->isGrouped()) {
-                $plot_id = $this->getGroup()->getMasterPlot()->getId();
-                $members = $this->getGroup()->getMasterPlot()->getMembers();
-                $plot = $this->getGroup()->getMasterPlot();
-            }
             if (!empty($member)) {
                 if (count($members) < $this->getMaxMembers() && !in_array($member, $members)) {
                     array_push($members, $member);
@@ -307,10 +284,6 @@ class Plot extends PermissionManager {
             $old_members = $this->getMembers();
             $plot_id = $this->getId();
 
-            if ($this->isGrouped()) {
-                $plot_id = $this->getGroup()->getMasterPlot()->getId();
-                $old_members = $this->getGroup()->getMasterPlot()->getMembers();
-            }
             if (in_array($member, $old_members)) {
                 $members = serialize(array_diff($old_members, array($member)));
                 $stmt = $this->db->prepare("UPDATE plots SET plot_members = :plot_members WHERE plot_id = :plot_id");
@@ -360,21 +333,14 @@ class Plot extends PermissionManager {
         $res = $stmt->execute();
         $group = null;
         while($row = $res->fetchArray()){
-            $group =  new Group($row["group_name"], Main::getInstance()->getPlotByName($row["master_plot"]));
+            $group =  new Group($row["group_name"], Plot::getPlotByName($row["master_plot"]));
         }
         return $group;
     }
 
 
     public function isGrouped(){
-        $group = $this->getGroup();
-
-        if($group !== null){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return $this->getGroup() !== null;
     }
 
     public function isMasterPlot() : ?bool{
@@ -391,7 +357,7 @@ class Plot extends PermissionManager {
         $res = Main::getInstance()->db->query("SELECT * FROM plots");
         $plots = null;
         while($row = $res->fetchArray()){
-            $plots[] = Main::getInstance()->getPlotById($row["plot_id"]);
+            $plots[] = Plot::getPlotById($row["plot_id"]);
         }
         return $plots;
     }
@@ -455,9 +421,16 @@ class Plot extends PermissionManager {
     public function delete(){
         if($this->isGrouped()){
             if($this->isMasterPlot()){
+                foreach($this->getGroup()->getPlots() as $plot){
+                    if($plot !== null){
+                        if(!$plot->isMasterPlot()) {
+                            $plot->delete();
+                        }
+                    }
+                }
                 $this->getGroup()->delete();
             }
-            else{
+            else {
                 $this->getGroup()->removeFromGroup($this);
             }
         }
@@ -474,16 +447,9 @@ class Plot extends PermissionManager {
 
 
     public function reset(){
-        $plot_id = $this->getId();
-        if($this->isGrouped()){
-            $plot_id = $this->getGroup()->getMasterPlot()->getId();
-        }
         $this->setOwner();
-        $stmt = $this->db->prepare("UPDATE plots SET plot_members = :plot_members WHERE plot_id = :plot_id");
-        $empty_array = serialize(array());
-        $stmt->bindParam("plot_members", $empty_array, SQLITE3_TEXT);
-        $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
-        $stmt->execute();
-        return true;
+        foreach($this->getMembers() as $member){
+            $this->removeMember($member);
+        }
     }
 }
