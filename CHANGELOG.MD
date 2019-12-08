@@ -1,6 +1,6 @@
 # PlotArea changelog
 
-##1.0.0
+## 1.0.0
 
 * Added basic Plot functionality
 * Per plot permissions added
