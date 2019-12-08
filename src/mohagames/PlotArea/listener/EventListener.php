@@ -15,6 +15,7 @@ use pocketmine\block\ItemFrame;
 use pocketmine\block\Trapdoor;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerInteractEntityEvent;
@@ -42,14 +43,11 @@ class EventListener implements Listener
         $block = $e->getBlock();
         $player = $e->getPlayer();
         if ($block instanceof Chest) {
-            $plot = $this->main->getPlot($e->getBlock());
+            $plot = Plot::get($e->getBlock());
             if ($plot !== null) {
-                if ($plot->isGrouped()) {
-                    $plot = $plot->getGroup()->getMasterPlot();
-                }
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_CHESTS) || $player->hasPermission("pa.staff") || PublicChest::getChest($block) !== null) {
+                if ($plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_CHESTS) || $player->hasPermission("pa.staff.interactbypass") || PublicChest::getChest($block) !== null) {
                     if (($plot->isMember($player->getName()) || $plot->isOwner($player->getName())) && PublicChest::getChest($block) !== null) {
-                        $player->sendMessage("§cOpgeast! §4U opent een openbare chest.");
+                        $player->sendMessage("§cOpgepast! §4U opent een openbare chest.");
                     }
                     return;
                 } else {
@@ -64,14 +62,11 @@ class EventListener implements Listener
     {
         $block = $e->getBlock();
         if ($block instanceof Trapdoor) {
-            $plot = $this->main->getPlot($block);
+            $plot = Plot::get($block);
             if ($plot !== null) {
-                if ($plot->isGrouped()) {
-                    $plot = $plot->getGroup()->getMasterPlot();
-                }
                 $player = $e->getPlayer();
 
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_TRAPDOORS) || $player->hasPermission("pa.staff")) {
+                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_TRAPDOORS) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
                 } else {
                     $player->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -88,12 +83,9 @@ class EventListener implements Listener
         $block = $e->getBlock();
         $player = $e->getPlayer();
         if ($block instanceof Door) {
-            $plot = $this->main->getPlot($e->getBlock());
+            $plot = Plot::get($block);
             if ($plot !== null) {
-                if ($plot->isGrouped()) {
-                    $plot = $plot->getGroup()->getMasterPlot();
-                }
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_DOORS) || $player->hasPermission("pa.staff")) {
+                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_DOORS) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
                 } else {
                     $player->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -110,12 +102,9 @@ class EventListener implements Listener
         $block = $e->getBlock();
         $player = $e->getPlayer();
         if ($block instanceof FenceGate) {
-            $plot = $this->main->getPlot($e->getBlock());
+            $plot = Plot::get($block);
             if ($plot !== null) {
-                if ($plot->isGrouped()) {
-                    $plot = $plot->getGroup()->getMasterPlot();
-                }
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_GATES) || $player->hasPermission("pa.staff")) {
+                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_GATES) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
                 } else {
                     $player->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -131,20 +120,31 @@ class EventListener implements Listener
     {
         $block = $e->getBlock();
         if ($block instanceof ItemFrame) {
-            $plot = $this->main->getPlot($block);
+            $plot = Plot::get($block);
             if ($plot !== null) {
-                if ($plot->isGrouped()) {
-                    $plot = $plot->getGroup()->getMasterPlot();
-                }
-
                 if ($e->getAction() == PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-                    if ($plot->getOwner() == strtolower($e->getPlayer()->getName()) || $plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ITEMFRAMES) || $e->getPlayer()->hasPermission("pa.staff")) {
+                    if ($plot->getOwner() == strtolower($e->getPlayer()->getName()) || $plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ITEMFRAMES) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")) {
                         return;
                     } else {
                         $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
                         $e->setCancelled();
                     }
-                } elseif ($e->getAction() == PlayerInteractEvent::LEFT_CLICK_BLOCK && !$e->getPlayer()->hasPermission("pa.staff")) {
+                } elseif ($e->getAction() == PlayerInteractEvent::LEFT_CLICK_BLOCK && !$e->getPlayer()->hasPermission("pa.staff.interactbypass")) {
+                    $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
+                    $e->setCancelled();
+                }
+            }
+        }
+    }
+
+    public function armorStandInteraction(PlayerInteractEntityEvent $e){
+        if($e->getEntity() instanceof ArmorStand){
+            $plot = Plot::get($e->getEntity());
+            if($plot !== null){
+                if($plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ARMORSTANDS) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")){
+                    return;
+                }
+                else{
                     $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
                     $e->setCancelled();
                 }
@@ -159,6 +159,4 @@ class EventListener implements Listener
             $e->getPlayer()->teleport($e->getFrom());
         }
     }
-
-
 }
