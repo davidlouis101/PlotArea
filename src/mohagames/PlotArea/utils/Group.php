@@ -23,7 +23,7 @@ class Group{
         $res = $stmt->execute();
         $group = null;
         while($row = $res->fetchArray()){
-            $group = new Group($row["group_name"], Main::getInstance()->getPlotByName($row["master_plot"]));
+            $group = new Group($row["group_name"], Plot::getPlotByName($row["master_plot"]));
         }
         return $group;
     }
@@ -75,10 +75,23 @@ class Group{
         $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
         $res = $stmt->execute();
         while($row = $res->fetchArray()){
-            $master_plot = Main::getInstance()->getPlotByName($row["master_plot"]);
+            $master_plot = Plot::getPlotByName($row["master_plot"]);
         }
 
         return $master_plot;
+    }
+
+    public function getPlots() : ?array {
+        $group_name = $this->getName();
+        $stmt = $this->db->prepare("SELECT plot_id FROM plots WHERE group_name = :group_name");
+        $stmt->bindParam("group_name", $group_name, SQLITE3_TEXT);
+        $res = $stmt->execute();
+        $plots = null;
+        while($row = $res->fetchArray()){
+            $id = $row["plot_id"];
+            $plots[] = Plot::getPlotById($id);
+        }
+        return $plots;
     }
 
     public function setName(string $name){
