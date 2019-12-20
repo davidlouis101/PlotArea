@@ -12,22 +12,28 @@ class EventManager{
     private static $events = [
         "mohagames\PlotArea\\events\PlotRemoveMemberEvent",
         "mohagames\PlotArea\\events\PlotAddMemberEvent",
-        "mohagames\PlotArea\\events\PlotSetOwnerEvent"
+        "mohagames\PlotArea\\events\PlotSetOwnerEvent",
+        "mohagames\PlotArea\\events\PlotEnterEvent",
+        "mohagames\PlotArea\\events\PlotDeleteEvent"
     ];
 
-    public function registerListener(PlotListener $pl){
+    public static function registerListener(PlotListener $pl){
+
         $rc = new \ReflectionClass($pl);
 
-        foreach($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method){
+        foreach($rc->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
 
-            if($method->class == $rc->getName()){
+            if ($method->class == $rc->getName()) {
                 $parameters = $method->getParameters();
 
-                foreach($parameters as $parameter){
-                    $name = $parameter->getType()->getName();
+                foreach ($parameters as $parameter) {
+                    $type = $parameter->getType();
+                    if ($type !== null) {
+                        $name = $type->getName();
 
-                    if(in_array($name, EventManager::$events)){
-                        $handlers[] = $method;
+                        if (in_array($name, EventManager::$events)) {
+                            $handlers[] = $method;
+                        }
                     }
                 }
             }
@@ -35,14 +41,12 @@ class EventManager{
         if(isset($handlers)){
             self::$handlerList[] = [$rc->getName() => $handlers];
             self::$objList[] = [$rc->getName() => $pl];
+            $pl->getLogger()->alert("This plugin is now listening to the PlotArea plugin. Be aware that the Event caller functions are experimental!");
         }
         else{
             self::$handlerList[] = [];
             self::$objList[] = [];
 
         }
-
-
-
     }
 }

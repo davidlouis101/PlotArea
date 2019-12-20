@@ -534,49 +534,6 @@ class Main extends PluginBase implements Listener
     }
 
     /**
-     * @deprecated gelieve de nieuwe Plot::get() te gebruiken.
-     * @see Plot::get()
-     */
-    public function getPlot(Position $position)
-    {
-        $this->getLogger()->warning("The method Main::getPlot() is deprecated. Please use the new Plot::get() method to get a plot!");
-        $result = $this->db->query("SELECT * FROM plots");
-        while ($row = $result->fetchArray()) {
-            $plot_level = null;
-            if($this->getServer()->isLevelGenerated($row["plot_world"])){
-                if($this->getServer()->isLevelLoaded($row["plot_world"])){
-                    $plot_level = $this->getServer()->getLevelByName($row["plot_world"]);
-                }
-                else{
-                    if($this->getServer()->loadLevel($row["plot_world"])){
-                        $plot_level = $this->getServer()->getLevelByName($row["plot_world"]);
-                    }
-                }
-            }
-            if($plot_level == null){
-                return null;
-            }
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $plot_level, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-            $location = $plot->getLocation();
-            $location = $location->calculateCoords();
-            $pos1 = $location->getPos1();
-            $pos2 = $location->getPos2();
-            $p_x = $position->getFloorX();
-            $p_y = $position->getFloorY();
-            $p_z = $position->getFloorZ();
-            $level = $position->getLevel();
-            $res = false;
-            if ($pos1["y"] == $pos2["y"]) {
-                $res = ($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]);
-            }
-            if (($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]) && (($p_y >= $pos1["y"] && $p_y < $pos2["y"]) || $res) && $plot->getLevel() === $level) {
-                return $plot;
-                break;
-            }
-        }
-    }
-
-    /**
      * @deprecated Deze method wordt binnenkort verwijderd.
      * @see Plot::get() Gelieve deze method te gebruiken.
      */

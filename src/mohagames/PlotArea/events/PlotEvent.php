@@ -7,8 +7,8 @@ use pocketmine\Player;
 
 abstract class PlotEvent
 {
-
     public abstract function getPlayer() : Player;
 
     public abstract function getPlot() : Plot;
+
 }

@@ -3,9 +3,10 @@
 namespace mohagames\PlotArea\tasks;
 
 
+use mohagames\PlotArea\events\internal\EventCaller;
+use mohagames\PlotArea\events\PlotEnterEvent;
 use mohagames\PlotArea\Main;
 use mohagames\PlotArea\utils\Plot;
-use pocketmine\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat;
 
@@ -29,6 +30,7 @@ class PositioningTask extends Task{
                 }
                 $status = $this->isInPlot[$player->getName()];
                 if($plot->getId() !== $status ){
+                    new EventCaller(new PlotEnterEvent($player, $plot));
                     $text = $plot->getOwner() ? $plot->getOwner() : "§aGeen eigenaar";
                     $player->sendPopup(TextFormat::RED . $plot->getName() . "\n" . TextFormat::BLUE . $text);
                     $this->isInPlot[$player->getName()] = $plot->getId();
