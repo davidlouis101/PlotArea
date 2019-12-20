@@ -30,7 +30,8 @@ class PositioningTask extends Task{
                 }
                 $status = $this->isInPlot[$player->getName()];
                 if($plot->getId() !== $status ){
-                    new EventCaller(new PlotEnterEvent($player, $plot));
+                    $ev = new PlotEnterEvent($player, $plot);
+                    $ev->call();
                     $text = $plot->getOwner() ? $plot->getOwner() : "§aGeen eigenaar";
                     $player->sendPopup(TextFormat::RED . $plot->getName() . "\n" . TextFormat::BLUE . $text);
                     $this->isInPlot[$player->getName()] = $plot->getId();

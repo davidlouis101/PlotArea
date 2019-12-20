@@ -3,8 +3,6 @@
 namespace mohagames\PlotArea\utils;
 
 use mohagames\LevelAPI\utils\LevelManager;
-use mohagames\PlotArea\events\internal\EventCaller;
-use mohagames\PlotArea\events\internal\EventManager;
 use mohagames\PlotArea\events\PlotAddMemberEvent;
 use mohagames\PlotArea\events\PlotRemoveMemberEvent;
 use mohagames\PlotArea\events\PlotSetOwnerEvent;
@@ -226,7 +224,8 @@ class Plot extends PermissionManager {
             $stmt->close();
 
             if($owner !== null && $executor !== null){
-                new EventCaller(new PlotSetOwnerEvent($this, $executor, $owner));
+                $ev = new PlotSetOwnerEvent($this, $executor, $owner);
+                $ev->call();
             }
             return true;
         }
@@ -254,7 +253,8 @@ class Plot extends PermissionManager {
                         $plot->initPlayerPerms($member);
                     }
                     if($executor !== null) {
-                        new EventCaller(new PlotAddMemberEvent($this, $executor, $member));
+                        $ev = new PlotAddMemberEvent($this, $executor, $member);
+                        $ev->call();
                     }
                     return true;
                 } else {
@@ -306,7 +306,9 @@ class Plot extends PermissionManager {
 
                 //EVENT SHIZLE
                 if($executor !== null){
-                    new EventCaller(new PlotRemoveMemberEvent($this, $executor, $member));
+                    $ev = new PlotRemoveMemberEvent($this, $executor, $member);
+                    $ev->call();
+
                 }
 
                 return true;
