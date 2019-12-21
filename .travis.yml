@@ -1,1 +1,4 @@
 language: php
+before-install: composer install --no-interaction
+script:
+  - test/unit
