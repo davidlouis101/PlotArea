@@ -17,7 +17,6 @@ class PlotAddMemberEvent extends PlotEvent
         $this->player = $player;
         $this->member = $member;
         $this->plot = $plot;
-
     }
 
 
