@@ -1,4 +1,4 @@
 language: php
-before-install: composer install --no-interaction
+before_script: composer install --no-interaction
 script:
   - php vendor/bin/phpunit
