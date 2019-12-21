@@ -2,7 +2,6 @@
 
 namespace mohagames\PlotArea\utils;
 
-use mohagames\PlotArea\Main;
 
 class Group{
 

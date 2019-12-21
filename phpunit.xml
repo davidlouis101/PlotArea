@@ -4,7 +4,7 @@ colors="true"
 verbose="true"
 stopOnFailure="false">
     <testsuites>
-        <testsuite name="Test suite">
+        <testsuite name="Test Case">
         <directory>tests</directory>
         </testsuite>
     </testsuites>

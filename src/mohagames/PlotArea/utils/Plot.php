@@ -34,7 +34,7 @@ class Plot extends PermissionManager {
         $this->db = Main::getInstance()->db;
         $this->main = Main::getInstance();
         $this->plot_id = $this->getId();
-        parent::__construct($this->getPlot());
+        parent::__construct($this);
     }
 
 
