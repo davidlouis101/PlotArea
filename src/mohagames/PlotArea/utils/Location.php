@@ -19,7 +19,6 @@ class Location{
 
     public function getPos1(){
         return $this->location[0];
-
     }
     public function getPos2(){
         return $this->location[1];
