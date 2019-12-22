@@ -3,8 +3,6 @@
 namespace mohagames\PlotArea\utils;
 
 use mohagames\PlotArea\Main;
-use pocketmine\Player;
-use raklib\server\ServerInstance;
 
 class PermissionManager {
 
