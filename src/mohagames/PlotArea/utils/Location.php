@@ -29,7 +29,8 @@ class Location{
         $location = $this->calculateCoords();
         $mid_x = ($location->getPos1()["x"] + $location->getPos2()["x"]) / 2;
         $mid_z = ($location->getPos1()["z"] + $location->getPos2()["z"]) / 2;
-        return array($mid_x, $mid_z);
+        $mid_y = ($location->getPos1()["y"] + $location->getPos2)()["y"]) /2;
+        return array("x" => $mid_x, "y" => $mid_y, "z" => $mid_z);
     }
 
     /*
