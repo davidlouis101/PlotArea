@@ -34,7 +34,8 @@ class Plot extends PermissionManager {
      *
      * @see Plot::save()
      *
-     * To get an existing plot please use one of the supported Get methods eg./
+     * To get an existing plot please use one of the supported Get methods eg.
+     */
     public function __construct($name, $owner, Level $level, array $location, array $members = array())
     {
     $this->name = $name;
