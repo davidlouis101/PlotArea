@@ -3,8 +3,9 @@
 namespace mohagames\PlotArea\events;
 
 use mohagames\PlotArea\utils\Plot;
+use pocketmine\event\Cancellable;
 
-class PlotResetEvent extends PlotEvent
+class PlotResetEvent extends PlotEvent implements Cancellable
 {
 
     private $plot;
