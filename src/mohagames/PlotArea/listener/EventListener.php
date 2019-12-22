@@ -10,7 +10,6 @@ use mohagames\PlotArea\utils\PublicChest;
 use pocketmine\block\Chest;
 use pocketmine\block\Door;
 use pocketmine\block\FenceGate;
-use pocketmine\block\IronDoor;
 use pocketmine\block\ItemFrame;
 use pocketmine\block\Trapdoor;
 use pocketmine\event\block\BlockBreakEvent;
@@ -68,12 +67,11 @@ class EventListener implements Listener
 
                 if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_TRAPDOORS) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
-                } else {
-                    $player->sendPopup("§4U kan deze actie niet uitvoeren.");
-                    Main::getInstance()->getScheduler()->scheduleDelayedTask(new blockMovementTask($this, $player), 10);
-                    $this->cancelMovement[$e->getPlayer()->getName()] = true;
-                    $e->setCancelled();
                 }
+                $player->sendPopup("§4U kan deze actie niet uitvoeren.");
+                Main::getInstance()->getScheduler()->scheduleDelayedTask(new blockMovementTask($this, $player), 10);
+                $this->cancelMovement[$e->getPlayer()->getName()] = true;
+                $e->setCancelled();
             }
         }
     }
@@ -87,12 +85,11 @@ class EventListener implements Listener
             if ($plot !== null) {
                 if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_DOORS) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
-                } else {
-                    $player->sendPopup("§4U kan deze actie niet uitvoeren.");
-                    Main::getInstance()->getScheduler()->scheduleDelayedTask(new blockMovementTask($this, $player), 10);
-                    $this->cancelMovement[$e->getPlayer()->getName()] = true;
-                    $e->setCancelled();
                 }
+                $player->sendPopup("§4U kan deze actie niet uitvoeren.");
+                Main::getInstance()->getScheduler()->scheduleDelayedTask(new blockMovementTask($this, $player), 10);
+                $this->cancelMovement[$e->getPlayer()->getName()] = true;
+                $e->setCancelled();
             }
         }
     }
@@ -106,12 +103,11 @@ class EventListener implements Listener
             if ($plot !== null) {
                 if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_GATES) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
-                } else {
-                    $player->sendPopup("§4U kan deze actie niet uitvoeren.");
-                    Main::getInstance()->getScheduler()->scheduleDelayedTask(new blockMovementTask($this, $player), 10);
-                    $this->cancelMovement[$e->getPlayer()->getName()] = true;
-                    $e->setCancelled();
                 }
+                $player->sendPopup("§4U kan deze actie niet uitvoeren.");
+                Main::getInstance()->getScheduler()->scheduleDelayedTask(new blockMovementTask($this, $player), 10);
+                $this->cancelMovement[$e->getPlayer()->getName()] = true;
+                $e->setCancelled();
             }
         }
     }
@@ -125,10 +121,9 @@ class EventListener implements Listener
                 if ($e->getAction() == PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
                     if ($plot->getOwner() == strtolower($e->getPlayer()->getName()) || $plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ITEMFRAMES) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")) {
                         return;
-                    } else {
-                        $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
-                        $e->setCancelled();
                     }
+                    $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
+                    $e->setCancelled();
                 } elseif ($e->getAction() == PlayerInteractEvent::LEFT_CLICK_BLOCK && !$e->getPlayer()->hasPermission("pa.staff.interactbypass")) {
                     $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
                     $e->setCancelled();
@@ -144,10 +139,9 @@ class EventListener implements Listener
                 if($plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ARMORSTANDS) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")){
                     return;
                 }
-                else{
-                    $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
-                    $e->setCancelled();
-                }
+
+                $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
+                $e->setCancelled();
             }
         }
     }
