@@ -7,12 +7,8 @@ use mohagames\PlotArea\events\PlotAddMemberEvent;
 use mohagames\PlotArea\events\PlotRemoveMemberEvent;
 use mohagames\PlotArea\events\PlotSetOwnerEvent;
 use mohagames\PlotArea\Main;
-use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
-use pocketmine\Player;
 
 class Plot extends PermissionManager {
     protected $name;
