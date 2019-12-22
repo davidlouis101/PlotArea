@@ -10,7 +10,7 @@ class Locationtest extends TestCase{
     }
     public function testLocationPos1(){
         $loc = new Location([["x" => 10, "y" => 20,"z" => 30], ["x" => 50, "y" => 80, "z" => 90]]);
-        $this->assertTrue(false);
+        $this->assertEquals(["x" => 10, "y" => 20, "z" => 30], $loc->getPos1());
     }
 
     public function testLocationPos2(){
