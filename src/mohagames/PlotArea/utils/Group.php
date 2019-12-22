@@ -3,6 +3,11 @@
 namespace mohagames\PlotArea\utils;
 
 
+use mohagames\PlotArea\events\group\GroupDeleteEvent;
+use mohagames\PlotArea\events\group\GroupSetMasterPlotEvent;
+use mohagames\PlotArea\events\group\GroupSetNameEvent;
+use mohagames\PlotArea\Main;
+
 class Group{
 
     protected $group_name;
@@ -40,8 +45,7 @@ class Group{
                 $stmt->bindParam("master_plot", $master_plot, SQLITE3_TEXT);
                 $stmt->execute();
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         }
@@ -94,22 +98,30 @@ class Group{
     }
 
     public function setName(string $name){
-        $group_id = $this->getGroupId();
-        $stmt = $this->db->prepare("UPDATE groups SET group_name = :group_name WHERE group_id = :group_id");
-        $stmt->bindParam("group_name", $name, SQLITE3_TEXT);
-        $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
-        $stmt->execute();
-        $stmt->close();
+        $ev = new GroupSetNameEvent($this, $this->getName(), $name);
+        $ev->call();
+        if (!$ev->isCancelled()) {
+            $group_id = $this->getGroupId();
+            $stmt = $this->db->prepare("UPDATE groups SET group_name = :group_name WHERE group_id = :group_id");
+            $stmt->bindParam("group_name", $name, SQLITE3_TEXT);
+            $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
     public function setMasterPlot(Plot $plot){
-        $master_plot = $plot->getName();
-        $group_id = $this->getGroupId();
-        $stmt = $this->db->prepare("UPDATE groups SET master_plot = :group_name WHERE group_id = :group_id");
-        $stmt->bindParam("master_plot", $master_plot, SQLITE3_TEXT);
-        $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
-        $stmt->execute();
-        $stmt->close();
+        $ev = new GroupSetMasterPlotEvent($this, $plot);
+        $ev->call();
+        if (!$ev->isCancelled()) {
+            $master_plot = $plot->getName();
+            $group_id = $this->getGroupId();
+            $stmt = $this->db->prepare("UPDATE groups SET master_plot = :group_name WHERE group_id = :group_id");
+            $stmt->bindParam("master_plot", $master_plot, SQLITE3_TEXT);
+            $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
     public function addToGroup(Plot $plot){
@@ -145,15 +157,19 @@ class Group{
     }
 
     public function delete(){
-        $groupname = $this->getName();
-        $stmt = $this->db->prepare("UPDATE plots SET group_name = NULL WHERE group_name = :group_name");
-        $stmt->bindParam("group_name", $groupname, SQLITE3_TEXT);
-        $stmt->execute();
-        $stmt->close();
-        $stmt = $this->db->prepare("DELETE FROM groups WHERE group_name = :group_name");
-        $stmt->bindParam("group_name", $groupname, SQLITE3_TEXT);
-        $stmt->execute();
-        $stmt->close();
+        $ev = new GroupDeleteEvent($this);
+        $ev->call();
+        if (!$ev->isCancelled()) {
+            $groupname = $this->getName();
+            $stmt = $this->db->prepare("UPDATE plots SET group_name = NULL WHERE group_name = :group_name");
+            $stmt->bindParam("group_name", $groupname, SQLITE3_TEXT);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $this->db->prepare("DELETE FROM groups WHERE group_name = :group_name");
+            $stmt->bindParam("group_name", $groupname, SQLITE3_TEXT);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
 }
