@@ -5,6 +5,7 @@ namespace mohagames\PlotArea\utils;
 use mohagames\LevelAPI\utils\LevelManager;
 use mohagames\PlotArea\events\PlotAddMemberEvent;
 use mohagames\PlotArea\events\PlotRemoveMemberEvent;
+use mohagames\PlotArea\events\PlotResetEvent;
 use mohagames\PlotArea\events\PlotSetOwnerEvent;
 use mohagames\PlotArea\Main;
 use pocketmine\level\Level;
@@ -20,21 +21,44 @@ class Plot extends PermissionManager {
     public $db;
     public $main;
 
+    /**
+     * Plot constructor.
+     *
+     * Do not create a new Plot instance! Creating one will result in an error.
+     * To create a new plot please use @param $name
+     * @param $owner
+     * @param Level $level
+     * @param array $location
+     * @param array $members
+     * @see Plot::get()
+     *
+     * @see Plot::save()
+     *
+     * To get an existing plot please use one of the supported Get methods eg./
     public function __construct($name, $owner, Level $level, array $location, array $members = array())
     {
-        $this->name = $name;
-        $this->level = $level;
-        $this->owner = $owner;
-        $this->location = new Location($location);
-        $this->members = $members;
-        $this->db = Main::getInstance()->db;
-        $this->main = Main::getInstance();
-        $this->plot_id = $this->getId();
-        parent::__construct($this);
+    $this->name = $name;
+    $this->level = $level;
+    $this->owner = $owner;
+    $this->location = new Location($location);
+    $this->members = $members;
+    $this->db = Main::getInstance()->db;
+    $this->main = Main::getInstance();
+    $this->plot_id = $this->getId();
+    parent::__construct($this);
     }
 
-
-    public static function save($name, Level $level, array $location, $owner = null, array $members = array()){
+    /**
+     * This method is used for creating new Plots in the database.
+     * @param $name
+     * @param Level $level
+     * @param array $location
+     * @param string $owner
+     * @param array $members
+     * @return Plot
+     */
+    public static function save($name, Level $level, array $location, string $owner = null, array $members = array())
+    {
         $db = Main::getInstance()->db;
         $members_ser = serialize($members);
         $location_ser = serialize($location);
@@ -53,6 +77,16 @@ class Plot extends PermissionManager {
         return new Plot($name, $owner, $level, $location, $members);
     }
 
+    /**
+     * This method will search for a Plot for the given Position.
+     *
+     * When a plot is grouped this method will return the Master Plot by default
+     * If you don't want to get the Master Plot then set the $grouping parameter to false.
+     *
+     * @param Position $position
+     * @param bool $grouping
+     * @return Plot|null
+     */
     public static function get(Position $position, bool $grouping = true) : ?Plot {
         $main = Main::getInstance();
         $result = $main->db->query("SELECT * FROM plots");
@@ -96,10 +130,20 @@ class Plot extends PermissionManager {
 
     }
 
+    /**
+     * Useless at this moment.
+     *
+     * @return Plot
+     */
     public function getPlot() : Plot{
         return $this;
     }
 
+    /**
+     * This returns the name of the current plot.
+     *
+     * @return mixed
+     */
     public function getName(){
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("SELECT plot_name FROM plots WHERE plot_id = :plot_id");
@@ -113,6 +157,11 @@ class Plot extends PermissionManager {
         return $name;
     }
 
+    /**
+     * This returns the name of the current plot owner
+     *
+     * @return mixed
+     */
     public function getOwner(){
         $plot_id = $this->getId();
 
@@ -126,6 +175,12 @@ class Plot extends PermissionManager {
         return $owner;
     }
 
+    /**
+     * This method checks if the given player is the owner of the Plot.
+     *
+     * @param string $player
+     * @return bool
+     */
     public function isOwner(string $player) : bool{
         $owner = $this->getOwner();
 
@@ -133,21 +188,40 @@ class Plot extends PermissionManager {
     }
 
 
+    /**
+     * This method returns the Level the plot is in.
+     *
+     * @return Level
+     */
     public function getLevel(){
         return $this->level;
     }
 
-
+    /**
+     * This method returns the name of the level
+     * @return string
+     *
+     * @see Plot::getLevel()
+     * @deprecated Please use the getLevel() method
+     */
     public function getLevelName(){
         return $this->level->getName();
     }
 
-
+    /**
+     * This returns an instance of the Location class and contains all the location info from this Plot.
+     *
+     * @return Location
+     */
     public function getLocation(){
         return $this->location;
     }
 
-
+    /**
+     * This method returns an array of all the Plot Members
+     *
+     * @return mixed
+     */
     public function getMembers(){
         $plot_id = $this->getId();
 
@@ -161,6 +235,12 @@ class Plot extends PermissionManager {
         return $members;
     }
 
+    /**
+     * This method checks if the given player is an member of the Plot
+     *
+     * @param $member
+     * @return bool
+     */
     public function isMember($member) : bool{
         $members = $this->getMembers();
 
@@ -168,6 +248,11 @@ class Plot extends PermissionManager {
         return in_array($member, $members);
     }
 
+    /**
+     * This method returns a string of all the members of the plot
+     *
+     * @return bool|string
+     */
     public function getMembersList(){
         $members = $this->getMembers();
 
@@ -183,6 +268,11 @@ class Plot extends PermissionManager {
         }
     }
 
+    /**
+     * This method returns the size of the Plot
+     *
+     * @return array
+     */
     public function getSize() : array {
         $loc = $this->getLocation();
         $loc = $loc->calculateCoords();
@@ -196,10 +286,17 @@ class Plot extends PermissionManager {
 
     }
 
+    /**
+     * This method returns the ID of the Plot, this method should only be used internally.
+     *
+     * @return int
+     */
     public function getId() : int{
-        $conn = $this->db->prepare("SELECT plot_id FROM plots WHERE plot_location = :location");
+        $worldname = $this->level->getName();
+        $conn = $this->db->prepare("SELECT plot_id FROM plots WHERE plot_location = :location AND plot_world = :plot_world");
         $loc = serialize($this->getLocation()->getLocation());
         $conn->bindParam("location",$loc , SQLITE3_TEXT);
+        $conn->bindParam("plot_world", $worldname, SQLITE3_TEXT);
         $result = $conn->execute();
         while($row = $result->fetchArray()){
             return $row["plot_id"];
@@ -208,10 +305,22 @@ class Plot extends PermissionManager {
         $conn->close();
     }
 
+    /**
+     * This method sets a new owner in the Plot
+     *
+     * @param null $owner
+     * @param Player|null $executor
+     * @return bool
+     * @throws \ReflectionException
+     */
     public function setOwner($owner = null, Player $executor = null) : bool{
         $owner = $owner ? strtolower($owner) : null;
         $lvl = new LevelManager();
         if($lvl->userExists($owner) || is_null($owner)) {
+            if ($executor !== null) {
+                $ev = new PlotSetOwnerEvent($this, $executor, $owner);
+                $ev->call();
+            }
             $plot_id = $this->getId();
             $stmt = $this->db->prepare("UPDATE plots SET plot_owner = :plot_owner WHERE plot_id = :plot_id");
             $stmt->bindParam("plot_owner", $owner, SQLITE3_TEXT);
@@ -219,10 +328,7 @@ class Plot extends PermissionManager {
             $stmt->execute();
             $stmt->close();
 
-            if($owner !== null && $executor !== null){
-                $ev = new PlotSetOwnerEvent($this, $executor, $owner);
-                $ev->call();
-            }
+
             return true;
         }
         else{
@@ -230,6 +336,14 @@ class Plot extends PermissionManager {
         }
     }
 
+    /**
+     * This method adds an member to the Plot
+     *
+     * @param string $member
+     * @param Player|null $executor
+     * @return bool
+     * @throws \ReflectionException
+     */
     public function addMember(string $member, Player $executor = null) : bool{
         $member = strtolower($member);
         if(LevelManager::getManager()->userExists($member)) {
@@ -238,6 +352,10 @@ class Plot extends PermissionManager {
             $plot = $this->getPlot();
             if (!empty($member)) {
                 if (count($members) < $this->getMaxMembers() && !in_array($member, $members)) {
+                    if ($executor !== null) {
+                        $ev = new PlotAddMemberEvent($this, $executor, $member);
+                        $ev->call();
+                    }
                     array_push($members, $member);
                     $members = serialize($members);
                     $stmt = $this->db->prepare("UPDATE plots SET plot_members = :plot_members WHERE plot_id = :plot_id");
@@ -248,10 +366,7 @@ class Plot extends PermissionManager {
                     if ($plot->getPlayerPermissions($member) == null) {
                         $plot->initPlayerPerms($member);
                     }
-                    if($executor !== null) {
-                        $ev = new PlotAddMemberEvent($this, $executor, $member);
-                        $ev->call();
-                    }
+
                     return true;
                 } else {
                     return false;
@@ -266,7 +381,11 @@ class Plot extends PermissionManager {
     }
 
 
-
+    /**
+     * This method returns the maximum number of members the plot can have.
+     *
+     * @return int
+     */
     public function getMaxMembers() : int{
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("SELECT max_members FROM plots WHERE plot_id = :plot_id");
@@ -277,6 +396,11 @@ class Plot extends PermissionManager {
         }
     }
 
+    /**
+     * This method sets the maximum number of members the plot can have.
+     *
+     * @param int $max_count
+     */
     public function setMaxMembers(int $max_count){
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("UPDATE plots SET max_members = :max_members WHERE plot_id = :plot_id");
@@ -286,12 +410,24 @@ class Plot extends PermissionManager {
         $stmt->close();
     }
 
+    /**
+     * This method removes a member from the plot
+     *
+     * @param string $member
+     * @param Player|null $executor
+     * @return bool
+     * @throws \ReflectionException
+     */
     public function removeMember(string $member, Player $executor = null) : bool{
         $member = strtolower($member);
             $old_members = $this->getMembers();
             $plot_id = $this->getId();
 
             if (in_array($member, $old_members)) {
+                if ($executor !== null) {
+                    $ev = new PlotRemoveMemberEvent($this, $executor, $member);
+                    $ev->call();
+                }
                 $members = serialize(array_diff($old_members, array($member)));
                 $stmt = $this->db->prepare("UPDATE plots SET plot_members = :plot_members WHERE plot_id = :plot_id");
                 $stmt->bindParam("plot_members", $members, SQLITE3_TEXT);
@@ -299,20 +435,17 @@ class Plot extends PermissionManager {
                 $stmt->execute();
                 $stmt->close();
                 $this->destructPlayerPerms($member);
-
-                //EVENT SHIZLE
-                if($executor !== null){
-                    $ev = new PlotRemoveMemberEvent($this, $executor, $member);
-                    $ev->call();
-
-                }
-
                 return true;
             } else {
                 return false;
             }
     }
 
+    /**
+     * This method sets the group the Plot is in
+     *
+     * @param string|null $name
+     */
     public function setGroupName(?string $name) : void{
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("UPDATE plots SET group_name = :group_name WHERE plot_id = :plot_id");
@@ -322,7 +455,12 @@ class Plot extends PermissionManager {
         $stmt->close();
     }
 
-    public function getGroupName(){
+    /**
+     * This method returns the name of the Group the Plot is currently member of.
+     * @return bool
+     */
+    protected function getGroupName()
+    {
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("SELECT group_name FROM plots WHERE plot_id = :plot_id");
         $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
@@ -340,6 +478,11 @@ class Plot extends PermissionManager {
         }
     }
 
+    /**
+     * This method returns the name of the Group the Plot is member of
+     *
+     * @return Group|null
+     */
     public function getGroup() : ?Group{
         $group_name = $this->getGroupName();
         $db = $this->db;
@@ -354,10 +497,21 @@ class Plot extends PermissionManager {
     }
 
 
+    /**
+     * If the Plot is a member of a Group then this wil return True, otherwise it will return false
+     *
+     * @return bool
+     */
     public function isGrouped(){
         return $this->getGroup() !== null;
     }
 
+    /**
+     * This method returns a bool depending on if the Plot is the Master Plot of the Group
+     * If the Plot is not a member of a Group this method will return null
+     *
+     * @return bool|null
+     */
     public function isMasterPlot() : ?bool{
         if($this->isGrouped()){
             $exp = $this->getGroup()->getMasterPlot()->getName() == $this->getName();
@@ -368,6 +522,11 @@ class Plot extends PermissionManager {
         return $exp;
     }
 
+    /**
+     * This returns an array of all the plots
+     *
+     * @return Plot[]
+     */
     public static function getPlots() : array{
         $res = Main::getInstance()->db->query("SELECT * FROM plots");
         $plots = null;
@@ -377,6 +536,12 @@ class Plot extends PermissionManager {
         return $plots;
     }
 
+    /**
+     * This method fetches the Plot with the corresponding ID
+     *
+     * @param int $id
+     * @return Plot|null
+     */
     public static function getPlotById(int $id) : ?Plot
     {
         $main = Main::getInstance();
@@ -432,7 +597,16 @@ class Plot extends PermissionManager {
     }
 
 
-
+    /**
+     * This method deletes the plot
+     *
+     * If the plot is the master plot this method will delete all the Plots in the group and the Group itself
+     * If the plot is just a member of a Group, the Plot will be removed from the Group and then deleted.
+     *
+     *
+     *
+     * @return mixed
+     */
     public function delete(){
         if($this->isGrouped()){
             if($this->isMasterPlot()){
@@ -460,11 +634,19 @@ class Plot extends PermissionManager {
     }
 
 
-
+    /**
+     * This method resets all the Plot settings
+     *
+     * @throws \ReflectionException
+     */
     public function reset(){
-        $this->setOwner();
-        foreach($this->getMembers() as $member){
-            $this->removeMember($member);
+        $ev = new PlotResetEvent($this);
+        $ev->call();
+        if (!$ev->isCancelled()) {
+            $this->setOwner();
+            foreach ($this->getMembers() as $member) {
+                $this->removeMember($member);
+            }
         }
     }
 }

@@ -84,6 +84,9 @@ class Group{
         return $master_plot;
     }
 
+    /**
+     * @return Plot[]
+     */
     public function getPlots() : ?array {
         $group_name = $this->getName();
         $stmt = $this->db->prepare("SELECT plot_id FROM plots WHERE group_name = :group_name");
