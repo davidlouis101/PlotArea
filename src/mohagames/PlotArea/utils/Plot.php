@@ -3,6 +3,7 @@
 namespace mohagames\PlotArea\utils;
 
 use mohagames\LevelAPI\utils\LevelManager;
+use mohagames\PlotAlert\events\PlotSetGroupnameEvent;
 use mohagames\PlotArea\events\PlotAddMemberEvent;
 use mohagames\PlotArea\events\PlotRemoveMemberEvent;
 use mohagames\PlotArea\events\PlotResetEvent;
@@ -10,8 +11,11 @@ use mohagames\PlotArea\events\PlotSetOwnerEvent;
 use mohagames\PlotArea\Main;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
+use pocketmine\Player;
+use src\mohagames\PlotArea\events\PlotDeleteEvent;
 
-class Plot extends PermissionManager {
+class Plot extends PermissionManager
+{
     protected $name;
     protected $owner;
     protected $level;
@@ -321,6 +325,9 @@ class Plot extends PermissionManager {
             if ($executor !== null) {
                 $ev = new PlotSetOwnerEvent($this, $executor, $owner);
                 $ev->call();
+                if ($ev->isCancelled()) {
+                    return true;
+                }
             }
             $plot_id = $this->getId();
             $stmt = $this->db->prepare("UPDATE plots SET plot_owner = :plot_owner WHERE plot_id = :plot_id");
@@ -328,8 +335,6 @@ class Plot extends PermissionManager {
             $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
             $stmt->execute();
             $stmt->close();
-
-
             return true;
         }
         else{
@@ -356,6 +361,9 @@ class Plot extends PermissionManager {
                     if ($executor !== null) {
                         $ev = new PlotAddMemberEvent($this, $executor, $member);
                         $ev->call();
+                        if ($ev->isCancelled()) {
+                            return true;
+                        }
                     }
                     array_push($members, $member);
                     $members = serialize($members);
@@ -428,6 +436,9 @@ class Plot extends PermissionManager {
                 if ($executor !== null) {
                     $ev = new PlotRemoveMemberEvent($this, $executor, $member);
                     $ev->call();
+                    if ($ev->isCancelled()) {
+                        return true;
+                    }
                 }
                 $members = serialize(array_diff($old_members, array($member)));
                 $stmt = $this->db->prepare("UPDATE plots SET plot_members = :plot_members WHERE plot_id = :plot_id");
@@ -446,14 +457,20 @@ class Plot extends PermissionManager {
      * This method sets the group the Plot is in
      *
      * @param string|null $name
+     * @throws \ReflectionException
      */
-    public function setGroupName(?string $name) : void{
-        $plot_id = $this->getId();
-        $stmt = $this->db->prepare("UPDATE plots SET group_name = :group_name WHERE plot_id = :plot_id");
-        $stmt->bindParam("group_name", $name, SQLITE3_TEXT);
-        $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
-        $stmt->execute();
-        $stmt->close();
+    public function setGroupName(?string $name) : void
+    {
+        $ev = new PlotSetGroupnameEvent($this, $name);
+        $ev->call();
+        if (!$ev->isCancelled()) {
+            $plot_id = $this->getId();
+            $stmt = $this->db->prepare("UPDATE plots SET group_name = :group_name WHERE plot_id = :plot_id");
+            $stmt->bindParam("group_name", $name, SQLITE3_TEXT);
+            $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
     /**
@@ -606,14 +623,25 @@ class Plot extends PermissionManager {
      *
      *
      *
+     * @param Player|null $executor
      * @return mixed
+     * @throws \ReflectionException
      */
-    public function delete(){
-        if($this->isGrouped()){
-            if($this->isMasterPlot()){
-                foreach($this->getGroup()->getPlots() as $plot){
-                    if($plot !== null){
-                        if(!$plot->isMasterPlot()) {
+    public function delete(Player $executor = null): void
+    {
+
+        if ($executor !== null) {
+            $ev = new PlotDeleteEvent($this, $executor);
+            $ev->call();
+            if ($ev->isCancelled()) {
+                return;
+            }
+        }
+        if ($this->isGrouped()) {
+            if ($this->isMasterPlot()) {
+                foreach ($this->getGroup()->getPlots() as $plot) {
+                    if ($plot !== null) {
+                        if (!$plot->isMasterPlot()) {
                             $plot->delete();
                         }
                     }

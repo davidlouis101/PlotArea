@@ -3,9 +3,10 @@
 namespace mohagames\PlotArea\events;
 
 use mohagames\PlotArea\utils\Plot;
+use pocketmine\event\Cancellable;
 use pocketmine\Player;
 
-class PlotRemoveMemberEvent extends PlotEvent
+class PlotRemoveMemberEvent extends PlotEvent implements Cancellable
 {
 
     protected $player;
