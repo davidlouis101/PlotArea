@@ -19,6 +19,9 @@ class PlotTest extends TestCase
 
     public function testPlotLookup()
     {
+
+        var_dump($this->registered_plot);
+
         $position = ["x" => 30, "y" => 40, "z" => 45];
 
         $p_x = $position["x"];
