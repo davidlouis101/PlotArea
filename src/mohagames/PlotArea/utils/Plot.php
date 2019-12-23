@@ -3,16 +3,19 @@
 namespace mohagames\PlotArea\utils;
 
 use mohagames\LevelAPI\utils\LevelManager;
-use mohagames\PlotAlert\events\PlotSetGroupnameEvent;
 use mohagames\PlotArea\events\PlotAddMemberEvent;
+use mohagames\PlotArea\events\PlotDeleteEvent;
 use mohagames\PlotArea\events\PlotRemoveMemberEvent;
 use mohagames\PlotArea\events\PlotResetEvent;
+use mohagames\PlotArea\events\PlotSetGroupnameEvent;
 use mohagames\PlotArea\events\PlotSetOwnerEvent;
 use mohagames\PlotArea\Main;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\Player;
-use src\mohagames\PlotArea\events\PlotDeleteEvent;
+
+//Alle events
+
 
 class Plot extends PermissionManager
 {
@@ -457,7 +460,6 @@ class Plot extends PermissionManager
      * This method sets the group the Plot is in
      *
      * @param string|null $name
-     * @throws \ReflectionException
      */
     public function setGroupName(?string $name) : void
     {
