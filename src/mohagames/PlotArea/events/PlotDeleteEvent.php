@@ -1,10 +1,9 @@
 <?php
 
 
-namespace src\mohagames\PlotArea\events;
+namespace mohagames\PlotArea\events;
 
 
-use mohagames\PlotArea\events\PlotEvent;
 use mohagames\PlotArea\utils\Plot;
 use pocketmine\event\Cancellable;
 use pocketmine\Player;

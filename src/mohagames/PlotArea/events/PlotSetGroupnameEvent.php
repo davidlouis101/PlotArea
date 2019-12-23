@@ -1,8 +1,7 @@
 <?php
 
-namespace mohagames\PlotAlert\events;
+namespace mohagames\PlotArea\events;
 
-use mohagames\PlotArea\events\PlotEvent;
 use mohagames\PlotArea\utils\Plot;
 
 class PlotSetGroupnameEvent extends PlotEvent
