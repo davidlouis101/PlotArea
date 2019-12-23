@@ -6,21 +6,17 @@ use PHPUnit\Framework\TestCase;
 class PlotTest extends TestCase
 {
 
-
-    public $registered_plot;
-
     public function testPlotRegistration()
     {
-        $name = str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz");
-        $this->registered_plot[] = ["name" => $name, "location" => new Location([["x" => 10, "y" => 20, "z" => 30], ["x" => 50, "y" => 80, "z" => 90]])];
+        $plots = $this->generatePlot();
 
-        $this->assertTrue(is_array($this->registered_plot));
+        $this->assertTrue(is_array($plots));
     }
 
     public function testPlotLookup()
     {
-
-        var_dump($this->registered_plot);
+        $name = str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz");
+        $this->registered_plot[] = ["name" => $name, "location" => new Location([["x" => 10, "y" => 20, "z" => 30], ["x" => 50, "y" => 80, "z" => 90]])];
 
         $position = ["x" => 30, "y" => 40, "z" => 45];
 
@@ -28,9 +24,10 @@ class PlotTest extends TestCase
         $p_y = $position["y"];
         $p_z = $position["z"];
 
-        foreach ($this->registered_plot as $plot) {
-            $location = $this->registered_plot["location"];
-            $loc = $location->getLocation()->calculateCoords();
+        $plots = $this->generatePlot();
+        foreach ($plots as $plot) {
+            $location = $plot["location"];
+            $loc = $location->calculateCoords();
             $pos1 = $loc->getPos1();
             $pos2 = $loc->getPos2();
             $res = $pos1["y"] == $pos2["y"];
@@ -44,6 +41,13 @@ class PlotTest extends TestCase
         $this->assertTrue(isset($plot));
 
 
+    }
+
+    public function generatePlot()
+    {
+        $name = str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz");
+        $plots[] = ["name" => $name, "location" => new Location([["x" => 10, "y" => 20, "z" => 30], ["x" => 50, "y" => 80, "z" => 90]])];
+        return $plots;
     }
 
 
