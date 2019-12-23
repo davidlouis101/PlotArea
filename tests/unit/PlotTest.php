@@ -14,7 +14,7 @@ class PlotTest extends TestCase
         $name = str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz");
         $this->registered_plot = ["name" => $name, "location" => new Location([["x" => 10, "y" => 20, "z" => 30], ["x" => 50, "y" => 80, "z" => 90]])];
 
-
+        $this->assertTrue(is_array($this->registered_plot));
     }
 
     public function testPlotLookup()
