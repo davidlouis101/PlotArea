@@ -460,6 +460,7 @@ class Plot extends PermissionManager
      * This method sets the group the Plot is in
      *
      * @param string|null $name
+     * @throws \ReflectionException
      */
     public function setGroupName(?string $name) : void
     {
@@ -511,7 +512,7 @@ class Plot extends PermissionManager
         $res = $stmt->execute();
         $group = null;
         while($row = $res->fetchArray()){
-            $group =  new Group($row["group_name"], Plot::getPlotByName($row["master_plot"]));
+            $group = new Group($row["group_name"], Plot::getPlotByName($row["master_plot"]));
         }
         return $group;
     }
