@@ -32,11 +32,11 @@ class Plot extends PermissionManager
      * Plot constructor.
      *
      * Do not create a new Plot instance! Creating one will result in an error.
-     * To create a new plot please use @param $name
-     * @param $owner
+     * To create a new plot please use @param $owner
      * @param Level $level
      * @param array $location
      * @param array $members
+     * @see Plot::save()
      * @see Plot::get()
      *
      * @see Plot::save()
@@ -632,7 +632,6 @@ class Plot extends PermissionManager
      */
     public function delete(Player $executor = null): void
     {
-
         if ($executor !== null) {
             $ev = new PlotDeleteEvent($this, $executor);
             $ev->call();
@@ -659,10 +658,8 @@ class Plot extends PermissionManager
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("DELETE FROM plots WHERE plot_id = :plot_id");
         $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
-        $res = $stmt->execute();
+        $stmt->execute();
         $stmt->close();
-
-        return $res;
     }
 
 
