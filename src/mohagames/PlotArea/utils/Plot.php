@@ -7,6 +7,10 @@
  |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
  | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
  |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
+
+Made by Mohamed
+
+
  */
 
 namespace mohagames\PlotArea\utils;
@@ -22,8 +26,10 @@ use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\Player;
 
-//Alle events
-
+/*
+ *
+ * TODO: Alle event methods fixen >_<
+ */
 
 class Plot extends PermissionManager
 {
@@ -40,28 +46,27 @@ class Plot extends PermissionManager
      * Plot constructor.
      *
      * Do not create a new Plot instance! Creating one will result in an error.
-     * To create a new plot please use @param $owner
+     * To create a new plot please use Plot::save()
+     *
      * @param Level $level
      * @param array $location
      * @param array $members
-     * @see Plot::save()
-     * @see Plot::get()
      *
+     * To get an existing plot please use one of the supported Get methods
      * @see Plot::save()
      *
-     * To get an existing plot please use one of the supported Get methods eg.
      */
-    public function __construct($name, $owner, Level $level, array $location, array $members = array())
+    private function __construct($name, $owner, Level $level, array $location, array $members = array())
     {
-    $this->name = $name;
-    $this->level = $level;
-    $this->owner = $owner;
-    $this->location = new Location($location);
-    $this->members = $members;
-    $this->db = Main::getInstance()->db;
-    $this->main = Main::getInstance();
-    $this->plot_id = $this->getId();
-    parent::__construct($this);
+        $this->name = $name;
+        $this->level = $level;
+        $this->owner = $owner;
+        $this->location = new Location($location);
+        $this->members = $members;
+        $this->db = Main::getInstance()->db;
+        $this->main = Main::getInstance();
+        $this->plot_id = $this->getId();
+        parent::__construct($this);
     }
 
     /**
