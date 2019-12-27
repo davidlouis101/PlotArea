@@ -1,26 +1,36 @@
 <?php
 
+/*
+  _____   _         _
+ |  __ \ | |       | |      /\
+ | |__) || |  ___  | |_    /  \    _ __  ___   __ _
+ |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
+ | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
+ |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
+ */
+
 namespace mohagames\PlotArea\tasks;
 
 
 use mohagames\PlotArea\listener\EventListener;
-use mohagames\PlotArea\Main;
 use pocketmine\Player;
 use pocketmine\scheduler\Task;
-use pocketmine\utils\TextFormat;
 
-class blockMovementTask extends Task{
+class blockMovementTask extends Task
+{
 
 
     public $player;
     public $event;
 
-    public function __construct(EventListener $event, Player $player){
+    public function __construct(EventListener $event, Player $player)
+    {
         $this->event = $event;
         $this->player = $player;
     }
 
-    public function onRun(int $currentTick){
+    public function onRun(int $currentTick)
+    {
         unset($this->event->cancelMovement[$this->player->getName()]);
     }
 

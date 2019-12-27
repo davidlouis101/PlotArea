@@ -1,5 +1,14 @@
 <?php
 
+/*
+  _____   _         _
+ |  __ \ | |       | |      /\
+ | |__) || |  ___  | |_    /  \    _ __  ___   __ _
+ |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
+ | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
+ |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
+ */
+
 namespace mohagames\PlotArea\utils;
 
 
@@ -8,7 +17,8 @@ use mohagames\PlotArea\events\group\GroupSetMasterPlotEvent;
 use mohagames\PlotArea\events\group\GroupSetNameEvent;
 use mohagames\PlotArea\Main;
 
-class Group{
+class Group
+{
 
     protected $group_name;
     protected $db;

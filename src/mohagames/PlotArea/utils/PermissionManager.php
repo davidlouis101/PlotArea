@@ -1,15 +1,25 @@
 <?php
 
+/*
+  _____   _         _
+ |  __ \ | |       | |      /\
+ | |__) || |  ___  | |_    /  \    _ __  ___   __ _
+ |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
+ | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
+ |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
+ */
+
 namespace mohagames\PlotArea\utils;
 
 use mohagames\PlotArea\Main;
 
-class PermissionManager {
+class PermissionManager
+{
 
     private $plot;
     private $db;
 
-    public const PLOT_INTERACT_DOORS = "plot.interact.doors";   
+    public const PLOT_INTERACT_DOORS = "plot.interact.doors";
     public const PLOT_INTERACT_CHESTS = "plot.interact.chests";
     public const PLOT_INTERACT_TRAPDOORS = "plot.interact.trapdoors";
     public const PLOT_INTERACT_GATES = "plot.interact.gates";

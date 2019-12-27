@@ -1,10 +1,16 @@
 <?php
 
+/*
+  _____   _         _
+ |  __ \ | |       | |      /\
+ | |__) || |  ___  | |_    /  \    _ __  ___   __ _
+ |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
+ | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
+ |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
+ */
+
 namespace mohagames\PlotArea;
 
-
-use DataLion\JobMenu\Controllers\jobuserController;
-use mohagames\PlotArea\events\internal\EventCaller;
 use mohagames\PlotArea\listener\EventListener;
 use mohagames\PlotArea\tasks\PositioningTask;
 use mohagames\PlotArea\utils\Group;
