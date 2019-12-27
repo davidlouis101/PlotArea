@@ -12,17 +12,11 @@ use pocketmine\block\Door;
 use pocketmine\block\FenceGate;
 use pocketmine\block\ItemFrame;
 use pocketmine\block\Trapdoor;
-use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerInteractEntityEvent;
-use pocketmine\event\player\PlayerMoveEvent;
-use pocketmine\item\ItemIds;
-use pocketmine\math\Vector3;
-use pocketmine\Player;
 use pocketmine\entity\object\ArmorStand;
+use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerInteractEntityEvent;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 
 class EventListener implements Listener
 {
@@ -128,20 +122,6 @@ class EventListener implements Listener
                     $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
                     $e->setCancelled();
                 }
-            }
-        }
-    }
-
-    public function armorStandInteraction(PlayerInteractEntityEvent $e){
-        if($e->getEntity() instanceof ArmorStand){
-            $plot = Plot::get($e->getEntity());
-            if($plot !== null){
-                if($plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ARMORSTANDS) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")){
-                    return;
-                }
-
-                $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
-                $e->setCancelled();
             }
         }
     }
