@@ -3,7 +3,6 @@
 namespace mohagames\PlotArea\tasks;
 
 
-use mohagames\PlotArea\events\internal\EventCaller;
 use mohagames\PlotArea\events\PlotEnterEvent;
 use mohagames\PlotArea\Main;
 use mohagames\PlotArea\utils\Plot;

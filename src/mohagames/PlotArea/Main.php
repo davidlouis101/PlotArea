@@ -3,12 +3,12 @@
 namespace mohagames\PlotArea;
 
 
-use mohagames\LevelAPI\utils\LevelManager;
+use DataLion\JobMenu\Controllers\jobuserController;
 use mohagames\PlotArea\events\internal\EventCaller;
-use mohagames\PlotArea\events\PlotAddMemberEvent;
 use mohagames\PlotArea\listener\EventListener;
 use mohagames\PlotArea\tasks\PositioningTask;
 use mohagames\PlotArea\utils\Group;
+use mohagames\PlotArea\utils\Member;
 use mohagames\PlotArea\utils\PermissionManager;
 use mohagames\PlotArea\utils\Plot;
 use mohagames\PlotArea\utils\PublicChest;
@@ -27,7 +27,6 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use SQLite3;
-use DataLion\JobMenu\Controllers\jobuserController;
 
 class Main extends PluginBase implements Listener
 {
@@ -148,24 +147,14 @@ class Main extends PluginBase implements Listener
                                     if (isset($args[1])) {
                                         if (!empty($args[1])) {
                                             $owner = $args[1];
-                                            if(strtolower($owner) !== $plot->getOwner()){
-                                                LevelManager::getManager()->addXp($owner, $this->getConfig()->get("xp-add"));
-                                            }
                                         } else {
-                                            $ex_owner = $plot->getOwner();
-                                            if($ex_owner !== null) {
-                                                LevelManager::getManager()->removeXp($ex_owner, $this->getConfig()->get("xp-deduct"));
-                                            }
                                             $owner = null;
                                         }
 
                                     } else {
-                                        $ex_owner = $plot->getOwner();
-                                        if($ex_owner !== null) {
-                                            LevelManager::getManager()->removeXp($plot->getOwner(), $this->getConfig()->get("xp-deduct"));
-                                        }
                                         $owner = null;
                                     }
+
                                     $ans = $plot->setOwner($owner, $sender);
                                     if($ans) {
                                         $sender->sendMessage(TextFormat::GREEN . $owner . " §2is nu de eigenaar van plot §a" . $plot->getName());
@@ -180,7 +169,6 @@ class Main extends PluginBase implements Listener
                                 $sender->sendMessage("§cU staat niet op een plot");
                             }
                             break;
-
                         case "addmember":
                             if (isset($args[1])) {
                                 $plot = Plot::get($sender);
@@ -191,16 +179,13 @@ class Main extends PluginBase implements Listener
                                             $sender->sendMessage("§aU hebt succesvol een lid toegevoegd");
                                         }
                                         else{
-                                            if(!LevelManager::getManager()->userExists($args[1])){
+                                            if (!Member::exists($args[1])) {
                                                 $sender->sendMessage("§4Deze speler bestaat niet.");
-                                            }
-                                            elseif($plot->getMaxMembers() == count($plot->getMembers())){
+                                            } elseif ($plot->getMaxMembers() == count($plot->getMembers())) {
                                                 $sender->sendMessage("§4U kan geen leden meer toevoegen.");
-                                            }
-                                            elseif($plot->isMember($args[1])){
+                                            } elseif ($plot->isMember($args[1])) {
                                                 $sender->sendMessage("§4Deze speler is al lid van het plot.");
-                                            }
-                                            else{
+                                            } else {
                                                 $sender->sendMessage("§4Er is iets misgelopen, gelieve dit te melden aan een stafflid.");
                                             }
 
