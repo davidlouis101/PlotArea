@@ -43,7 +43,7 @@ class Plot extends PermissionManager
     public $main;
 
     /**
-     * Plot constructor
+     * Plot constructor.
      *
      * Do not create a new Plot instance! Creating one will result in an error.
      * To create a new plot please use Plot::save()
