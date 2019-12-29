@@ -12,6 +12,11 @@
 namespace mohagames\PlotArea\events\permission;
 
 use mohagames\PlotArea\utils\Plot;
+use pocketmine\Player;
+
+/*
+ * TODO: Dit event implementeren
+ */
 
 class MemberSetPermissionEvent extends PermissionEvent
 {
@@ -20,13 +25,15 @@ class MemberSetPermissionEvent extends PermissionEvent
     private $member;
     private $permission;
     private $value;
+    private $player;
 
-    public function __construct(Plot $plot, string $member, string $permission, bool $value)
+    public function __construct(Plot $plot, string $member, string $permission, bool $value, ?Player $executor = null)
     {
         $this->plot = $plot;
         $this->member = $member;
         $this->permission = $permission;
         $this->value = $value;
+        $this->player = $executor;
     }
 
     public function getMember()
@@ -34,6 +41,11 @@ class MemberSetPermissionEvent extends PermissionEvent
 
         return $this->member;
 
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
     }
 
     public function getPlot(): Plot

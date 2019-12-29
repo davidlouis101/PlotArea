@@ -22,14 +22,14 @@ class PlotRemoveMemberEvent extends PlotEvent implements Cancellable
     protected $member;
     protected $plot;
 
-    public function __construct(Plot $plot, Player $player, string $member)
+    public function __construct(Plot $plot, string $member, ?Player $executor = null)
     {
-        $this->player = $player;
+        $this->player = $executor;
         $this->member = $member;
         $this->plot = $plot;
     }
 
-    public function getPlayer(): Player
+    public function getPlayer(): ?Player
     {
         return $this->player;
     }

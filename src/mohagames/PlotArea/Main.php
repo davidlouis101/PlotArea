@@ -231,7 +231,7 @@ class Main extends PluginBase implements Listener
                             if ($sender->hasPermission("pa.staff.plot.delete")) {
                                 $plot = Plot::get($sender, false);
                                 if ($plot !== null) {
-                                    $plot->delete();
+                                    $plot->delete($sender);
                                     $sender->sendMessage("§aHet plot is succesvol verwijderd");
                                 } else {
                                     $sender->sendMessage("§4U staat niet op een plot.");

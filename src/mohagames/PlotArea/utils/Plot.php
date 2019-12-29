@@ -330,19 +330,17 @@ class Plot extends PermissionManager
      * This method sets a new owner in the Plot
      *
      * @param null $owner
-     * @param Player|null $executor
+     * @param Player|null $executor The Player who executed the command
      * @return bool
      * @throws \ReflectionException
      */
     public function setOwner($owner = null, Player $executor = null) : bool{
         $owner = $owner ? strtolower($owner) : null;
         if (Member::exists($owner) || is_null($owner)) {
-            if ($executor !== null) {
-                $ev = new PlotSetOwnerEvent($this, $executor, $owner);
-                $ev->call();
-                if ($ev->isCancelled()) {
-                    return true;
-                }
+            $ev = new PlotSetOwnerEvent($this, $owner, $executor);
+            $ev->call();
+            if ($ev->isCancelled()) {
+                return true;
             }
             $plot_id = $this->getId();
             $stmt = $this->db->prepare("UPDATE plots SET plot_owner = :plot_owner WHERE plot_id = :plot_id");
@@ -361,7 +359,7 @@ class Plot extends PermissionManager
      * This method adds an member to the Plot
      *
      * @param string $member
-     * @param Player|null $executor
+     * @param Player|null $executor The Player who executed the command
      * @return bool
      * @throws \ReflectionException
      */
@@ -373,12 +371,10 @@ class Plot extends PermissionManager
             $plot = $this->getPlot();
             if (!empty($member)) {
                 if (count($members) < $this->getMaxMembers() && !in_array($member, $members)) {
-                    if ($executor !== null) {
-                        $ev = new PlotAddMemberEvent($this, $executor, $member);
-                        $ev->call();
-                        if ($ev->isCancelled()) {
-                            return true;
-                        }
+                    $ev = new PlotAddMemberEvent($this, $member, $executor);
+                    $ev->call();
+                    if ($ev->isCancelled()) {
+                        return true;
                     }
                     array_push($members, $member);
                     $members = serialize($members);
@@ -438,7 +434,7 @@ class Plot extends PermissionManager
      * This method removes a member from the plot
      *
      * @param string $member
-     * @param Player|null $executor
+     * @param Player|null $executor The Player who executed the command
      * @return bool
      * @throws \ReflectionException
      */
@@ -448,12 +444,10 @@ class Plot extends PermissionManager
             $plot_id = $this->getId();
 
             if (in_array($member, $old_members)) {
-                if ($executor !== null) {
-                    $ev = new PlotRemoveMemberEvent($this, $executor, $member);
-                    $ev->call();
-                    if ($ev->isCancelled()) {
-                        return true;
-                    }
+                $ev = new PlotRemoveMemberEvent($this, $member, $executor);
+                $ev->call();
+                if ($ev->isCancelled()) {
+                    return true;
                 }
                 $members = serialize(array_diff($old_members, array($member)));
                 $stmt = $this->db->prepare("UPDATE plots SET plot_members = :plot_members WHERE plot_id = :plot_id");
@@ -472,11 +466,12 @@ class Plot extends PermissionManager
      * This method sets the group the Plot is in
      *
      * @param string|null $name
+     * @param Player|null $executor The Player who executed the command
      * @throws \ReflectionException
      */
-    public function setGroupName(?string $name) : void
+    public function setGroupName(?string $name, Player $executor = null): void
     {
-        $ev = new PlotSetGroupnameEvent($this, $name);
+        $ev = new PlotSetGroupnameEvent($this, $name, $executor);
         $ev->call();
         if (!$ev->isCancelled()) {
             $plot_id = $this->getId();
@@ -591,7 +586,7 @@ class Plot extends PermissionManager
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if($world == null){
+            if ($world == null) {
                 return null;
             }
             $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
@@ -599,6 +594,10 @@ class Plot extends PermissionManager
         return $plot;
     }
 
+    /**
+     * @param string $name
+     * @return Plot|null
+     */
     public static function getPlotByName(string $name): ?Plot
     {
         $main = Main::getInstance();
@@ -607,7 +606,7 @@ class Plot extends PermissionManager
         $stmt->bindParam("plot_name", $name, SQLITE3_TEXT);
         $res = $stmt->execute();
         while ($row = $res->fetchArray()) {
-            if($main->getServer()->isLevelLoaded($row["plot_world"])){
+            if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
                 $world = $main->getServer()->getLevelByName($row["plot_world"]);
             }
             elseif($main->getServer()->isLevelGenerated($row["plot_world"])){
@@ -644,12 +643,10 @@ class Plot extends PermissionManager
      */
     public function delete(Player $executor = null): void
     {
-        if ($executor !== null) {
-            $ev = new PlotDeleteEvent($this, $executor);
-            $ev->call();
-            if ($ev->isCancelled()) {
-                return;
-            }
+        $ev = new PlotDeleteEvent($this, $executor);
+        $ev->call();
+        if ($ev->isCancelled()) {
+            return;
         }
         if ($this->isGrouped()) {
             if ($this->isMasterPlot()) {
@@ -678,10 +675,12 @@ class Plot extends PermissionManager
     /**
      * This method resets all the Plot settings
      *
+     * @param Player|null $executor
      * @throws \ReflectionException
      */
-    public function reset(){
-        $ev = new PlotResetEvent($this);
+    public function reset(Player $executor = null)
+    {
+        $ev = new PlotResetEvent($this, $executor);
         $ev->call();
         if (!$ev->isCancelled()) {
             $this->setOwner();

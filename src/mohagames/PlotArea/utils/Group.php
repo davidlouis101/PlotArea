@@ -16,6 +16,7 @@ use mohagames\PlotArea\events\group\GroupDeleteEvent;
 use mohagames\PlotArea\events\group\GroupSetMasterPlotEvent;
 use mohagames\PlotArea\events\group\GroupSetNameEvent;
 use mohagames\PlotArea\Main;
+use pocketmine\Player;
 
 class Group
 {
@@ -103,15 +104,16 @@ class Group
         $stmt->bindParam("group_name", $group_name, SQLITE3_TEXT);
         $res = $stmt->execute();
         $plots = null;
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             $id = $row["plot_id"];
             $plots[] = Plot::getPlotById($id);
         }
         return $plots;
     }
 
-    public function setName(string $name){
-        $ev = new GroupSetNameEvent($this, $this->getName(), $name);
+    public function setName(string $name, Player $executor = null)
+    {
+        $ev = new GroupSetNameEvent($this, $this->getName(), $name, $executor);
         $ev->call();
         if (!$ev->isCancelled()) {
             $group_id = $this->getGroupId();
@@ -123,8 +125,9 @@ class Group
         }
     }
 
-    public function setMasterPlot(Plot $plot){
-        $ev = new GroupSetMasterPlotEvent($this, $plot);
+    public function setMasterPlot(Plot $plot, Player $executor = null)
+    {
+        $ev = new GroupSetMasterPlotEvent($this, $plot, $executor);
         $ev->call();
         if (!$ev->isCancelled()) {
             $master_plot = $plot->getName();
@@ -162,15 +165,16 @@ class Group
         $res = $stmt->execute();
 
         $count = 0;
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             $count++;
         }
 
         return $count > 0;
     }
 
-    public function delete(){
-        $ev = new GroupDeleteEvent($this);
+    public function delete(Player $executor = null)
+    {
+        $ev = new GroupDeleteEvent($this, $executor);
         $ev->call();
         if (!$ev->isCancelled()) {
             $groupname = $this->getName();

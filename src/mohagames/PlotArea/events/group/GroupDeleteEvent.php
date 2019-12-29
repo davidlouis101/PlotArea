@@ -14,15 +14,23 @@ namespace mohagames\PlotArea\events\group;
 
 use mohagames\PlotArea\utils\Group;
 use pocketmine\event\Cancellable;
+use pocketmine\Player;
 
 class GroupDeleteEvent extends GroupEvent implements Cancellable
 {
 
     private $group;
+    private $player;
 
-    public function __construct(Group $group)
+    public function __construct(Group $group, ?Player $executor = null)
     {
         $this->group = $group;
+        $this->player = $executor;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
     }
 
     public function getGroup(): Group

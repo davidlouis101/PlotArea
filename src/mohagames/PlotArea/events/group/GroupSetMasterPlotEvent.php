@@ -16,6 +16,7 @@ namespace mohagames\PlotArea\events\group;
 
 use mohagames\PlotArea\utils\Group;
 use mohagames\PlotArea\utils\Plot;
+use pocketmine\Player;
 
 class GroupSetMasterPlotEvent extends GroupEvent
 {
@@ -23,16 +24,23 @@ class GroupSetMasterPlotEvent extends GroupEvent
 
     private $group;
     private $masterplot;
+    private $player;
 
-    public function __construct(Group $group, Plot $masterplot)
+    public function __construct(Group $group, Plot $masterplot, ?Player $executor = null)
     {
         $this->group = $group;
         $this->masterplot = $masterplot;
+        $this->player = $executor;
     }
 
     public function getGroup(): Group
     {
         return $this->group;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
     }
 
     public function getPlot(): Plot

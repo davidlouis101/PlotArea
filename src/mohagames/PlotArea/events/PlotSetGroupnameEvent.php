@@ -12,17 +12,25 @@
 namespace mohagames\PlotArea\events;
 
 use mohagames\PlotArea\utils\Plot;
+use pocketmine\Player;
 
 class PlotSetGroupnameEvent extends PlotEvent
 {
 
     private $plot;
     private $grouname;
+    private $player;
 
-    public function __construct(Plot $plot, string $grouname)
+    public function __construct(Plot $plot, string $grouname, ?Player $executor = null)
     {
         $this->grouname = $grouname;
         $this->plot = $plot;
+        $this->player = $executor;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
     }
 
     public function getPlot(): Plot

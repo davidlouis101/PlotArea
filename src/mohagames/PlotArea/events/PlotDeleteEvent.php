@@ -23,13 +23,13 @@ class PlotDeleteEvent extends PlotEvent implements Cancellable
     private $player;
     private $plot;
 
-    public function __construct(Plot $plot, Player $executor)
+    public function __construct(Plot $plot, ?Player $executor = null)
     {
         $this->player = $executor;
         $this->plot = $plot;
     }
 
-    public function getPlayer(): Player
+    public function getPlayer(): ?Player
     {
         return $this->player;
     }
