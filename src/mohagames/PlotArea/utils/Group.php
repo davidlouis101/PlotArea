@@ -18,6 +18,15 @@ use mohagames\PlotArea\events\group\GroupSetNameEvent;
 use mohagames\PlotArea\Main;
 use pocketmine\Player;
 
+
+/**
+ * Class Group
+ *
+ * A group is a group of multiple Plots, the group consists of a Master Plot and Member Plots.
+ * All the changes that are applied to the Master Plot will have an effect on the whole Group.
+ *
+ * @package mohagames\PlotArea\utils
+ */
 class Group
 {
 

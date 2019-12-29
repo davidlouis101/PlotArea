@@ -27,8 +27,6 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
-use pocketmine\level\Position;
-use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
@@ -522,77 +520,6 @@ class Main extends PluginBase implements Listener
                 $event->getPlayer()->sendMessage("§4Hier staat al een plot");
             }
         }
-    }
-
-    /**
-     * @deprecated Deze method wordt binnenkort verwijderd.
-     * @see Plot::get() Gelieve deze method te gebruiken.
-     */
-
-    public function isColliding(Position $position)
-    {
-        $result = $this->db->query("SELECT * FROM plots");
-        while ($row = $result->fetchArray()) {
-            $plot_level = null;
-            if($this->getServer()->isLevelGenerated($row["plot_world"])){
-                if($this->getServer()->isLevelLoaded($row["plot_world"])){
-                    $plot_level = $this->getServer()->getLevelByName($row["plot_world"]);
-                }
-                else{
-                    if($this->getServer()->loadLevel($row["plot_world"])){
-                        $plot_level = $this->getServer()->getLevelByName($row["plot_world"]);
-                    }
-                }
-            }
-            if($plot_level == null){
-                return null;
-            }
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $plot_level, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-            $location = $plot->getLocation();
-            $location = $location->calculateCoords();
-            $pos1 = $location->getPos1();
-            $pos2 = $location->getPos2();
-            $x = $position->getX();
-            $y = $position->getY();
-            $z = $position->getZ();
-            $level = $position->getLevel();
-            $res = false;
-            if ($pos1["y"] == $pos2["y"]) {
-                $res = ($x <= $pos1["x"] && $x >= $pos2["x"] && $z <= $pos1["z"] && $z >= $pos2["z"]);
-            }
-            if (($x <= $pos1["x"] && $x >= $pos2["x"] && $z <= $pos1["z"] && $z >= $pos2["z"]) && (($y > $pos1["y"] && $y < $pos2["y"]) || $res) && $level === $plot->getLevel()) {
-                return true;
-                break;
-            }
-        }
-    }
-
-    /**
-     * @deprecated Deze method wordt binnenkort verwijderd en vervangen door een statci method in de Plot class
-     */
-    public function getUserPlots(Player $player)
-    {
-        $stmt = $this->db->prepare("SELECT * FROM plots WHERE plot_owner = :owner");
-        $player_name = strtolower($player->getName());
-        $stmt->bindParam("owner", $player_name, SQLITE3_TEXT);
-        $result = $stmt->execute();
-        $plots = null;
-
-        while ($row = $result->fetchArray()) {
-            if($this->getServer()->isLevelLoaded($row["plot_world"])){
-                $world = $this->getServer()->getLevelByName($row["plot_world"]);
-            }
-            elseif($this->getServer()->isLevelGenerated($row["plot_world"])){
-                if($this->getServer()->loadLevel($row["plot_world"])){
-                    $world = $this->getServer()->getLevelByName($row["plot_world"]);
-                }
-            }
-            if($world == null){
-                return null;
-            }
-            $plots[] = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-        }
-        return $plots;
     }
 
 

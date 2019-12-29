@@ -628,6 +628,35 @@ class Plot extends PermissionManager
 
     }
 
+    /**
+     * @param Player $player
+     * @return Plot[] | null
+     */
+    public static function getUserPlots(Player $player)
+    {
+        $main = Main::getInstance();
+        $stmt = $main->db->prepare("SELECT * FROM plots WHERE plot_owner = :owner");
+        $player_name = strtolower($player->getName());
+        $stmt->bindParam("owner", $player_name, SQLITE3_TEXT);
+        $result = $stmt->execute();
+        $plots = null;
+
+        while ($row = $result->fetchArray()) {
+            if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
+                $world = $main->getServer()->getLevelByName($row["plot_world"]);
+            } elseif ($main->getServer()->isLevelGenerated($row["plot_world"])) {
+                if ($main->getServer()->loadLevel($row["plot_world"])) {
+                    $world = $main->getServer()->getLevelByName($row["plot_world"]);
+                }
+            }
+            if ($world == null) {
+                return null;
+            }
+            $plots[] = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
+        }
+        return $plots;
+    }
+
 
     /**
      * This method deletes the plot
