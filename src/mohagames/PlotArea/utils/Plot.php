@@ -581,11 +581,12 @@ class Plot extends PermissionManager
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if ($world !== null) {
-                $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
+            if ($world == null) {
+                return null;
             }
+            $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
         }
-        return isset($plot) ? $plot : null;
+        return $plot;
     }
 
     /**
@@ -607,12 +608,17 @@ class Plot extends PermissionManager
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if ($world !== null) {
-                $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
+            if ($world == null) {
+                return null;
             }
-        }
 
-        return isset($plot) ? $plot : null;
+            $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
+        }
+        if (isset($plot)) {
+            return $plot;
+        } else {
+            return null;
+        }
 
     }
 
@@ -637,9 +643,10 @@ class Plot extends PermissionManager
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if ($world !== null) {
-                $plots[] = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
+            if ($world == null) {
+                return null;
             }
+            $plots[] = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
         }
         return $plots;
     }
