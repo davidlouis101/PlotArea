@@ -1,16 +1,13 @@
 <?php
 
-/*
-  _____   _         _
- |  __ \ | |       | |      /\
- | |__) || |  ___  | |_    /  \    _ __  ___   __ _
- |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
- | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
- |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
-
-Made by Mohamed
-
-
+/**
+ * _____   _         _
+ * |  __ \ | |       | |      /\
+ * | |__) || |  ___  | |_    /  \    _ __  ___   __ _
+ * |  ___/ | | / _ \ | __|  / /\ \  | '__|/ _ \ / _` |
+ * | |     | || (_) || |_  / ____ \ | |  |  __/| (_| |
+ * |_|     |_| \___/  \__|/_/    \_\|_|   \___| \__,_|
+ * @author Mohamed El Yousfi
  */
 
 namespace mohagames\PlotArea\utils;
@@ -113,37 +110,36 @@ class Plot extends PermissionManager
         $result = $main->db->query("SELECT * FROM plots");
         while ($row = $result->fetchArray()) {
             $plot_level = null;
-            if($main->getServer()->isLevelGenerated($row["plot_world"])){
-                if($main->getServer()->isLevelLoaded($row["plot_world"])){
+            if ($main->getServer()->isLevelGenerated($row["plot_world"])) {
+                if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
                     $plot_level = $main->getServer()->getLevelByName($row["plot_world"]);
-                }
-                else{
-                    if($main->getServer()->loadLevel($row["plot_world"])){
+                } else {
+                    if ($main->getServer()->loadLevel($row["plot_world"])) {
                         $plot_level = $main->getServer()->getLevelByName($row["plot_world"]);
                     }
                 }
             }
-            if($plot_level == null){
-                return null;
-            }
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $plot_level, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-            $location = $plot->getLocation();
-            $location = $location->calculateCoords();
-            $pos1 = $location->getPos1();
-            $pos2 = $location->getPos2();
-            $p_x = $position->getFloorX();
-            $p_y = $position->getFloorY();
-            $p_z = $position->getFloorZ();
-            $level = $position->getLevel();
+            if ($plot_level !== null) {
+                $plot = new Plot($row["plot_name"], $row["plot_owner"], $plot_level, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
 
-            $res = $pos1["y"] == $pos2["y"];
+                $location = $plot->getLocation();
+                $location = $location->calculateCoords();
+                $pos1 = $location->getPos1();
+                $pos2 = $location->getPos2();
+                $p_x = $position->getFloorX();
+                $p_y = $position->getFloorY();
+                $p_z = $position->getFloorZ();
+                $level = $position->getLevel();
 
-            if (($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]) && (($p_y >= $pos1["y"] && $p_y < $pos2["y"]) || $res) && $plot->getLevel() === $level) {
-                $found_plot = $plot;
-                if($plot->isGrouped() && $grouping){
-                    $found_plot = $plot->getGroup()->getMasterPlot();
+                $res = $pos1["y"] == $pos2["y"];
+
+                if (($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]) && (($p_y >= $pos1["y"] && $p_y < $pos2["y"]) || $res) && $plot->getLevel()->getName() == $level->getName()) {
+                    $found_plot = $plot;
+                    if ($plot->isGrouped() && $grouping) {
+                        $found_plot = $plot->getGroup()->getMasterPlot();
+                    }
+                    break;
                 }
-                break;
             }
         }
 
