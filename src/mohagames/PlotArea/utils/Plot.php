@@ -574,20 +574,18 @@ class Plot extends PermissionManager
         $res = $stmt->execute();
         $plot = null;
         while ($row = $res->fetchArray()) {
-            if($main->getServer()->isLevelLoaded($row["plot_world"])){
+            if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
                 $world = $main->getServer()->getLevelByName($row["plot_world"]);
-            }
-            elseif($main->getServer()->isLevelGenerated($row["plot_world"])){
-                if($main->getServer()->loadLevel($row["plot_world"])){
+            } elseif ($main->getServer()->isLevelGenerated($row["plot_world"])) {
+                if ($main->getServer()->loadLevel($row["plot_world"])) {
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if ($world == null) {
-                return null;
+            if ($world !== null) {
+                $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
             }
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
         }
-        return $plot;
+        return isset($plot) ? $plot : null;
     }
 
     /**
@@ -604,23 +602,17 @@ class Plot extends PermissionManager
         while ($row = $res->fetchArray()) {
             if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
                 $world = $main->getServer()->getLevelByName($row["plot_world"]);
-            }
-            elseif($main->getServer()->isLevelGenerated($row["plot_world"])){
-                if($main->getServer()->loadLevel($row["plot_world"])){
+            } elseif ($main->getServer()->isLevelGenerated($row["plot_world"])) {
+                if ($main->getServer()->loadLevel($row["plot_world"])) {
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if($world == null){
-                return null;
+            if ($world !== null) {
+                $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
             }
+        }
 
-            $plot = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
-        }
-        if (isset($plot)) {
-            return $plot;
-        } else {
-            return null;
-        }
+        return isset($plot) ? $plot : null;
 
     }
 
@@ -645,10 +637,9 @@ class Plot extends PermissionManager
                     $world = $main->getServer()->getLevelByName($row["plot_world"]);
                 }
             }
-            if ($world == null) {
-                return null;
+            if ($world !== null) {
+                $plots[] = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
             }
-            $plots[] = new Plot($row["plot_name"], $row["plot_owner"], $world, unserialize($row["plot_location"]), unserialize($row["plot_members"]));
         }
         return $plots;
     }
