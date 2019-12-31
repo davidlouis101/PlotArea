@@ -459,11 +459,13 @@ class Plot extends PermissionManager
     }
 
     /**
-     * This method sets the group the Plot is in
+     * This method sets the group the Plot is in, do not use this method!
      *
      * @param string|null $name
      * @param Player|null $executor The Player who executed the command
      * @throws \ReflectionException
+     * @see Group::addToGroup()
+     *
      */
     public function setGroupName(?string $name, Player $executor = null): void
     {

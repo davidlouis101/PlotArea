@@ -1,11 +1,11 @@
 var searchData=
 [
-    ['get_9', ['get', ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#aad98daf3a81ec09cbe290217d00bc00d', 1, 'mohagames::PlotArea::utils::Plot']]],
+    ['get_9', ['get', ['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html#a7c42e79b1b7ca6eeaa6caa5a5c69ca7f', 1, 'mohagames\PlotArea\utils\Group\get()'], ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#aad98daf3a81ec09cbe290217d00bc00d', 1, 'mohagames\PlotArea\utils\Plot\get()']]],
     ['getcenter_10', ['getCenter', ['../classmohagames_1_1_plot_area_1_1utils_1_1_location.html#a58409a2a3802ee2805e0f1552c6ed9cc', 1, 'mohagames::PlotArea::utils::Location']]],
     ['getgroup_11', ['getGroup', ['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html#a51b2eb935c8a092010deb241ae364e32', 1, 'mohagames\PlotArea\utils\Group\getGroup()'], ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a4f44e7bc9de772c21b4304d11e87bf16', 1, 'mohagames\PlotArea\utils\Plot\getGroup()']]],
     ['getgroupid_12', ['getGroupId', ['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html#a80ff7d4e6101b55bc46ce120b838b98d', 1, 'mohagames::PlotArea::utils::Group']]],
     ['getgroupname_13', ['getGroupName', ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a07483299b3dddf34d210dc0a858df368', 1, 'mohagames::PlotArea::utils::Plot']]],
-    ['getid_14', ['getId', ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a12251d0c022e9e21c137a105ff683f13', 1, 'mohagames::PlotArea::utils::Plot']]],
+    ['getid_14', ['getId', ['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html#a12251d0c022e9e21c137a105ff683f13', 1, 'mohagames\PlotArea\utils\Group\getId()'], ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a12251d0c022e9e21c137a105ff683f13', 1, 'mohagames\PlotArea\utils\Plot\getId()']]],
     ['getinstance_15', ['getInstance', ['../classmohagames_1_1_plot_area_1_1_main.html#ac93fbec81f07e5d15f80db907e63dc10', 1, 'mohagames::PlotArea::Main']]],
     ['getlevel_16', ['getLevel', ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a23fac327059bf3fd0fe57555252d8cf2', 1, 'mohagames::PlotArea::utils::Plot']]],
     ['getlevelname_17', ['getLevelName', ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a5c1649570574f16801c868c91ccfc080', 1, 'mohagames::PlotArea::utils::Plot']]],
