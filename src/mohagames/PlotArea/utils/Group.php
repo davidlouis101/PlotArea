@@ -34,30 +34,56 @@ class Group
     protected $group_name;
     protected $db;
 
+    /**
+     * Gelieve nooit een Group aan te maken met de constructor. Als je dit wel doet dan zal je een error krijgen.
+     *
+     * Group constructor.
+     * @param $group_name
+     * @param Plot $master_plot
+     */
     public function __construct($group_name, Plot $master_plot)
     {
         $this->db = Main::GetInstance()->db;
         $this->group_name = $group_name;
     }
 
-    public static function getGroup($group_name) : ?Group{
+
+    /**
+     * Deze method returned een Group Object als er een Group is gevonden met de gegeven naam. Als er geen Group is gevonden met de gegeven naam dan returned de method null
+     *
+     * @param $group_name
+     * @return Group|null
+     */
+    public static function getGroup($group_name): ?Group
+    {
         $group_name = strtolower($group_name);
         $db = Main::getInstance()->db;
         $stmt = $db->prepare("SELECT * FROM groups WHERE lower(group_name) = :group_name");
         $stmt->bindParam("group_name", $group_name, SQLITE3_TEXT);
         $res = $stmt->execute();
         $group = null;
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             $group = new Group($row["group_name"], Plot::getPlotByName($row["master_plot"]));
         }
         return $group;
     }
 
-    public static function saveGroup($group_name, Plot $master_plot, Plot $second_plot){
+
+    /**
+     * de saveGroup method maakt een nieuwe Group aan in de database en maakt de gegeven Plot een Master Plot en het 2de gegeven Plot een member plot.
+     *
+     * @param $group_name
+     * @param Plot $master_plot
+     * @param Plot $second_plot
+     * @return bool
+     * @throws \ReflectionException
+     */
+    public static function saveGroup($group_name, Plot $master_plot, Plot $second_plot)
+    {
         $db = Main::getInstance()->db;
 
-        if($master_plot !== null && $second_plot !== null){
-            if($master_plot->getName() != $second_plot->getName()){
+        if ($master_plot !== null && $second_plot !== null) {
+            if ($master_plot->getName() != $second_plot->getName()) {
                 $master_plot->setGroupName($group_name);
                 $second_plot->setGroupName($group_name);
                 $master_plot = $master_plot->getName();
@@ -72,33 +98,51 @@ class Group
         }
     }
 
-    public function getGroupId() : int{
+    /**
+     * Deze method returned de ID van de Group
+     *
+     * @return int
+     */
+    public function getGroupId(): int
+    {
         $stmt = $this->db->prepare("SELECT group_id FROM groups WHERE group_name = :group_name");
         $stmt->bindParam("group_name", $this->group_name, SQLITE3_TEXT);
         $res = $stmt->execute();
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             return $row["group_id"];
         }
     }
 
-    public function getName(){
+    /**
+     * Deze method returned de naam van de Group
+     *
+     * @return mixed
+     */
+    public function getName()
+    {
         $group_id = $this->getGroupId();
         $stmt = $this->db->prepare("SELECT group_name FROM groups WHERE group_id = :group_id");
         $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
         $res = $stmt->execute();
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             $name = $row["group_name"];
         }
 
         return $name;
     }
 
-    public function getMasterPlot() : Plot{
+    /**
+     * Deze method returned de Master Plot van de Group
+     *
+     * @return Plot
+     */
+    public function getMasterPlot(): Plot
+    {
         $group_id = $this->getGroupId();
         $stmt = $this->db->prepare("SELECT master_plot FROM groups WHERE group_id = :group_id");
         $stmt->bindParam("group_id", $group_id, SQLITE3_INTEGER);
         $res = $stmt->execute();
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             $master_plot = Plot::getPlotByName($row["master_plot"]);
         }
 
@@ -106,6 +150,8 @@ class Group
     }
 
     /**
+     * Deze method returned een array van alle Plots die een lid zijn van de Group
+     *
      * @return Plot[]
      */
     public function getPlots() : ?array {
@@ -121,7 +167,14 @@ class Group
         return $plots;
     }
 
-    public function setName(string $name, Player $executor = null)
+    /**
+     * Deze method stelt de naam van de Group in
+     *
+     * @param string $name
+     * @param Player|null $executor
+     * @throws \ReflectionException
+     */
+    public function setName(string $name, Player $executor = null): void
     {
         $ev = new GroupSetNameEvent($this, $this->getName(), $name, $executor);
         $ev->call();
@@ -135,6 +188,14 @@ class Group
         }
     }
 
+
+    /**
+     * Deze method stelt de Master Plot in van de Group
+     *
+     * @param Plot $plot
+     * @param Player|null $executor
+     * @throws \ReflectionException
+     */
     public function setMasterPlot(Plot $plot, Player $executor = null)
     {
         $ev = new GroupSetMasterPlotEvent($this, $plot, $executor);
@@ -150,17 +211,33 @@ class Group
         }
     }
 
-    public function addToGroup(Plot $plot){
-        if($plot->getGroupName() !== $this->getName()){
+    /**
+     * Deze method voegt een Plot toe aan de Group
+     *
+     * @param Plot $plot
+     * @throws \ReflectionException
+     */
+    public function addToGroup(Plot $plot)
+    {
+        if ($plot->getGroupName() !== $this->getName()) {
             $plot->setGroupName($this->getName());
         }
     }
 
-    public function removeFromGroup(Plot $plot){
+    /**
+     * Deze method verwijderd een Plot van de Group
+     *
+     * @param Plot $plot
+     * @throws \ReflectionException
+     */
+    public function removeFromGroup(Plot $plot)
+    {
         $plot->setGroupName(null);
     }
 
-    public function getGroupMembers(){
+
+    public function getGroupMembers()
+    {
         $group_name = $this->getName();
         $stmt = $this->db->prepare("SELECT plot_name FROM plots WHERE group_name = :group_name");
         $stmt->bindParam("group_name", $group_name, SQLITE3_TEXT);
@@ -168,7 +245,14 @@ class Group
         $stmt->close();
     }
 
-    public static function groupExists($group_name){
+    /**
+     * Deze static method checkt als de gegeven Group bestaat of niet
+     *
+     * @param $group_name
+     * @return bool
+     */
+    public static function groupExists($group_name)
+    {
         $group_name = strtolower($group_name);
         $stmt = Main::getInstance()->db->prepare("SELECT * FROM groups WHERE lower(group_name) = :group_name");
         $stmt->bindParam("group_name", $group_name, SQLITE3_TEXT);
@@ -182,6 +266,12 @@ class Group
         return $count > 0;
     }
 
+    /**
+     * Deze method delete de Group
+     *
+     * @param Player|null $executor
+     * @throws \ReflectionException
+     */
     public function delete(Player $executor = null)
     {
         $ev = new GroupDeleteEvent($this, $executor);

@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['save_121',['save',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a8c87c8436fbd1810ae8820a56e6b74e3',1,'mohagames::PlotArea::utils::Plot']]],
-  ['setgroupname_122',['setGroupName',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a76f81760fd9e67c912c5659aad89aa4f',1,'mohagames::PlotArea::utils::Plot']]],
-  ['setmaxmembers_123',['setMaxMembers',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#aeca0214ad744bddbebd2bb6643a79374',1,'mohagames::PlotArea::utils::Plot']]],
-  ['setowner_124',['setOwner',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#aee4fb7e378c23e1314a7c77ff7ed8621',1,'mohagames::PlotArea::utils::Plot']]]
+  ['haspermission_144', ['hasPermission', ['../classmohagames_1_1_plot_area_1_1utils_1_1_permission_manager.html#afa864ad5a1298c89274ef2ef4b52067d', 1, 'mohagames::PlotArea::utils::PermissionManager']]]
 ];

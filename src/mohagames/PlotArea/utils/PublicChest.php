@@ -22,13 +22,23 @@ class PublicChest
 
     public $chest_location;
 
+
+    /**
+     * @param array $chest_location
+     * @param string $chest_world
+     * @param int $plot_id
+     * @deprecated deze class wordt binnenkort vervangen door een plugin
+     *
+     * PublicChest constructor.
+     */
     public function __construct(array $chest_location, string $chest_world, int $plot_id)
     {
         $this->chest_location = $chest_location;
 
     }
 
-    public static function getChest(Position $location) : ?PublicChest{
+    public static function getChest(Position $location): ?PublicChest
+    {
         $world = $location->getLevel()->getName();
         $location = serialize([$location->getFloorX(), $location->getFloorY(), $location->getFloorZ()]);
         $stmt = Main::getInstance()->db->prepare("SELECT * FROM chests WHERE chest_location = :chest_location AND chest_world = :chest_world");

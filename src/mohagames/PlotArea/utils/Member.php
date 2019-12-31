@@ -14,7 +14,12 @@ namespace mohagames\PlotArea\utils;
 class Member
 {
 
-
+    /**
+     * Deze method checkts als de gegeven speler ooit de server heeft gejoined.
+     *
+     * @param string $playername
+     * @return bool
+     */
     public static function exists(string $playername)
     {
         $playername = strtolower($playername);

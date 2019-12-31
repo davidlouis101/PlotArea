@@ -1,27 +1,5 @@
 var searchData=
 [
-  ['get_5',['get',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#aad98daf3a81ec09cbe290217d00bc00d',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getgroup_6',['getGroup',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a4f44e7bc9de772c21b4304d11e87bf16',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getgroupname_7',['getGroupName',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a07483299b3dddf34d210dc0a858df368',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getid_8',['getId',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a12251d0c022e9e21c137a105ff683f13',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getinstance_9',['getInstance',['../classmohagames_1_1_plot_area_1_1_main.html#ac93fbec81f07e5d15f80db907e63dc10',1,'mohagames::PlotArea::Main']]],
-  ['getlevel_10',['getLevel',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a23fac327059bf3fd0fe57555252d8cf2',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getlevelname_11',['getLevelName',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a5c1649570574f16801c868c91ccfc080',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getlocation_12',['getLocation',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a270a747ff748def87f313beeef64f3b3',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getmaxmembers_13',['getMaxMembers',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a713bde79dfdc0452a63e33c273f23ce0',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getmembers_14',['getMembers',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#ae2dddf0257aaab570a03557d68352929',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getmemberslist_15',['getMembersList',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#ac1d7c444c69918fa6fbe00c2b27cddfb',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getname_16',['getName',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a3d0963e68bb313b163a73f2803c64600',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getowner_17',['getOwner',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#adf7c472f5ffc30ad0aa95c63cd2b8f6c',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getplot_18',['getPlot',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a5796dd3a45351aefee3d8f536b2a79ad',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getplotbyid_19',['getPlotById',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a6aca44a59307e06bbcb49c2dfb45fa5b',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getplotbyname_20',['getPlotByName',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#af91f46523fe60666384174be3ea74205',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getplots_21',['getPlots',['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html#ab1c23a430846bf2c1f0f7bfa53dbfc87',1,'mohagames\PlotArea\utils\Group\getPlots()'],['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#ac3fcc0de7d5b0cf155f73330e7e40df3',1,'mohagames\PlotArea\utils\Plot\getPlots()']]],
-  ['getsize_22',['getSize',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a75cce10cdf81be6dc84881c28b3379b7',1,'mohagames::PlotArea::utils::Plot']]],
-  ['getuserplots_23',['getUserPlots',['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a49ca3009ce846911cce2e43fd4d58f91',1,'mohagames::PlotArea::utils::Plot']]],
-  ['group_24',['Group',['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html',1,'mohagames::PlotArea::utils']]],
-  ['groupdeleteevent_25',['GroupDeleteEvent',['../classmohagames_1_1_plot_area_1_1events_1_1group_1_1_group_delete_event.html',1,'mohagames::PlotArea::events::group']]],
-  ['groupevent_26',['GroupEvent',['../classmohagames_1_1_plot_area_1_1events_1_1group_1_1_group_event.html',1,'mohagames::PlotArea::events::group']]],
-  ['groupsetmasterplotevent_27',['GroupSetMasterPlotEvent',['../classmohagames_1_1_plot_area_1_1events_1_1group_1_1_group_set_master_plot_event.html',1,'mohagames::PlotArea::events::group']]],
-  ['groupsetnameevent_28',['GroupSetNameEvent',['../classmohagames_1_1_plot_area_1_1events_1_1group_1_1_group_set_name_event.html',1,'mohagames::PlotArea::events::group']]]
+    ['delete_5', ['delete', ['../classmohagames_1_1_plot_area_1_1utils_1_1_group.html#a6cd4bfc9af3bc108cea1625d1e8e6b58', 1, 'mohagames\PlotArea\utils\Group\delete()'], ['../classmohagames_1_1_plot_area_1_1utils_1_1_plot.html#a6cd4bfc9af3bc108cea1625d1e8e6b58', 1, 'mohagames\PlotArea\utils\Plot\delete()']]],
+    ['deprecated_20list_6', ['Deprecated List', ['../deprecated.html', 1, '']]]
 ];

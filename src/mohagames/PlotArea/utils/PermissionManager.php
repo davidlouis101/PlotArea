@@ -29,7 +29,13 @@ class PermissionManager
     public const PLOT_SET_PINCONSOLE = "plot.set.pinconsole";
     public $permission_list;
 
-
+    /**
+     * De permission Manager zorgt ervoor dat alleen de bevoegde leden bepaalde acties kunnen uitvoeren op het Plot
+     * De Plot class extend naar de PermissionManager class, dus is het niet nodig om een nieuwe instance aan te maken van de PermissionManager class.
+     *
+     * PermissionManager constructor.
+     * @param Plot $plot
+     */
     public function __construct(Plot $plot)
     {
         $this->plot = $plot;
@@ -45,9 +51,17 @@ class PermissionManager
         ];
     }
 
+    /**
+     * Dit stelt de permission in van de gegeven speler.
+     *
+     * @param string $player
+     * @param string $permission
+     * @param bool $boolean
+     * @return bool
+     */
     public function setPermission(string $player, string $permission, bool $boolean)
     {
-        if($this->plot->isMember($player)) {
+        if ($this->plot->isMember($player)) {
             if ($this->exists($permission)) {
                 $player = strtolower($player);
                 $player_perm = $this->getPermissions();
@@ -80,9 +94,15 @@ class PermissionManager
         }
     }
 
-    protected function initPlayerPerms(string $player){
+    /**
+     * Deze method initialiseert de permissions van de speler
+     *
+     * @param string $player
+     */
+    protected function initPlayerPerms(string $player)
+    {
         $player = strtolower($player);
-        if($this->plot->isMember($player)) {
+        if ($this->plot->isMember($player)) {
             $plot_id = $this->plot->getId();
             $perms = $this->getPermissions();
 
@@ -100,52 +120,71 @@ class PermissionManager
     /*
      * TODO: PlayerPerms moeten helemaal gedelete worden!
      */
-    protected function destructPlayerPerms(string $player){
+    protected function destructPlayerPerms(string $player)
+    {
         $permission_keys = array_keys($this->permission_list);
-        if($this->getPlayerPermissions($player) !== null){
-            foreach($permission_keys as $perm){
+        if ($this->getPlayerPermissions($player) !== null) {
+            foreach ($permission_keys as $perm) {
                 $this->setPermission($player, $perm, false);
             }
         }
     }
 
-    public function getPlayerPermissions(string $player) : ?array{
+    /**
+     * Deze method returned alle permissions van de gegeven speler
+     *
+     * @param string $player
+     * @return array|null
+     */
+    public function getPlayerPermissions(string $player): ?array
+    {
         $permissions = $this->getPermissions();
         $player = strtolower($player);
-        if(isset($permissions[$player])){
+        if (isset($permissions[$player])) {
             return $permissions[$player];
-        }
-        else{
+        } else {
             return null;
         }
 
 
     }
 
-    public function getPermissions() : ?array{
+    /**
+     * Deze method returned een array van alle permissions
+     *
+     * @return array|null
+     */
+    public function getPermissions(): ?array
+    {
         $plot_id = $this->plot->getId();
         $stmt = $this->db->prepare("SELECT plot_permissions FROM plots WHERE plot_id = :plot_id");
         $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
         $res = $stmt->execute();
 
-        while($row = $res->fetchArray()){
+        while ($row = $res->fetchArray()) {
             $permissions = $row["plot_permissions"];
         }
 
-        if($permissions === null){
+        if ($permissions === null) {
             return $permissions;
-        }
-        else{
+        } else {
             return unserialize($permissions);
         }
 
     }
 
-    public function hasPermission(string $player, string $permission) : ?bool{
-        if($this->plot->isOwner($player)){
+    /**
+     * Deze method checkt als de gegeven speler de gegeven permission heeft
+     *
+     * @param string $player
+     * @param string $permission
+     * @return bool|null
+     */
+    public function hasPermission(string $player, string $permission): ?bool
+    {
+        if ($this->plot->isOwner($player)) {
             return true;
-        }
-        elseif($this->plot->isMember($player)) {
+        } elseif ($this->plot->isMember($player)) {
             if ($this->exists($permission)) {
                 $player = strtolower($player);
                 $player_perms = $this->getPlayerPermissions($player);
