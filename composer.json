@@ -1,0 +1,9 @@
+{
+    "require": {
+        "phpunit/phpunit": "^8.5"
+    },
+
+    "autoload":{
+        "psr-4" : { "mohagames\\PlotArea\\utils\\" : "src/mohagames/PlotArea/utils"}
+    }
+}

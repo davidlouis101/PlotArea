@@ -1,0 +1,78 @@
+name: PlotArea
+main: mohagames\PlotArea\Main
+version: 5.4.1BETA
+api: 3.0.0
+author: Mohagames205
+load: POSTWORLD
+description: PlotArea, beheer je plots zoals nooit te voren!
+
+commands:
+  saveplot:
+    description: Plot opslagen
+    usage: "Usage: /saveplot <plotnaam>"
+    permission: pa.staff.saveplot
+  plotinfo:
+    description: Geeft info over een plot
+    usage: "Usage: /plotinfo"
+    permission: pa.plotinfo
+  plotwand:
+    description: Plottool
+    usage: "Usage: /plotwand"
+    permission: pa.staff.plotwand
+  plot:
+    description: Plot instellingen
+    usage: "Usage: /plot <arg>"
+    permission: pa.plotcmd
+  flushperms:
+    description: "Flushes all the permissions"
+
+permissions:
+  pa.plotinfo:
+    description: "Geeft info over plot"
+    default: true
+  pa.plotcmd:
+    description: "Plot command gebruiken"
+    default: true
+  pa.staff:
+    default: op
+    children:
+      pa.staff.devinfo:
+        default: op
+      pa.staff.saveplot:
+        description: "Plot opslagen"
+        default: op
+      pa.staff.plotwand:
+        description: "plotwand"
+        default: op
+      pa.staff.plot.addmember:
+        description: "permissie om lid toe te voegen."
+        default: op
+      pa.staff.plot.removemember:
+        description: "permissie om lid toe te verwijderen."
+        default: op
+      pa.staff.plot.delete:
+        description: "Een plot deleten"
+        default: op
+      pa.staff.plot.setowner:
+        description: "Owner instellen"
+        default: op
+      pa.staff.plot.setflag:
+        description: Allows the user to use the /plot setflag command
+        default: op
+      pa.staff.plot.publicchest:
+        default: op
+      pa.staff.plot.setmaxmembers:
+        default: op
+      pa.staff.interactbypass:
+        default: op
+      pa.staff.plot.creategroup:
+        default: op
+      pa.staff.plot.joingroup:
+        default: op
+      pa.staff.plot.deletegroup:
+        default: op
+      pa.staff.plot.leavegroup:
+        default: op
+      pa.staff.plot.userinfo:
+        default: op
+
