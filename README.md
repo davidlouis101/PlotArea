@@ -6,7 +6,7 @@ Make personal areas for players!
 **Opgepast** Deze versie is __niet__ af, gebruik dit op eigen risico.
 
 ## Documentatie
-https://mohagames205.github.io/PlotArea 
+https://mohagames205.github.io/PlotArea
 https://github.com/Mohagames205/PlotArea/wiki
 
 ## Een aantal modules worden momenteel herschreven
