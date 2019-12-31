@@ -164,14 +164,12 @@ class PermissionManager
         $plots = Plot::getPlots();
         if($plots !== null){
             foreach($plots as $plot){
-                if($plot instanceof Plot){
                     $members = $plot->getMembers();
                     foreach($members as $member){
                         $plot->initPlayerPerms($member);
                         Main::getInstance()->getLogger()->info("Member permissions succesvol ingesteld.");
                     }
                 }
-            }
         }
 
     }
