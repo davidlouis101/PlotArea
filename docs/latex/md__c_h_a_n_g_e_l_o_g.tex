@@ -1,0 +1,112 @@
+\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md1}{}\doxysection{1.\+0.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md1}
+
+\begin{DoxyItemize}
+\item Added basic Plot functionality
+\item Per plot permissions added
+\item Plot wand added for more precise and easy plot making
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md2}{}\doxysection{1.\+1.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md2}
+
+\begin{DoxyItemize}
+\item \sout{Plot collision detection} (broken)
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md3}{}\doxysection{2.\+0.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md3}
+
+\begin{DoxyItemize}
+\item Created a Plot class\+:
+\begin{DoxyItemize}
+\item {\ttfamily \$\+Plot-\/$>$get\+Owner()}
+\item {\ttfamily \$plot-\/$>$get\+Name()}
+\item {\ttfamily \$plot-\/$>$get\+Level()} =$>$ returns an instance of {\ttfamily Level}
+\item {\ttfamily \$plot-\/$>$get\+Level\+Name()} =$>$ returns the name of the Level
+\item {\ttfamily \$plot-\/$>$get\+Location()} =$>$ returns an instance of {\ttfamily Location}
+\item {\ttfamily \$plot-\/$>$get\+Members()} =$>$ returns an array with all the members of the Plot
+\item {\ttfamily \$plot-\/$>$is\+Member(string \$member)} =$>$ checks if the given user is a member of the plot, returns a boolean.
+\item {\ttfamily \$plot-\/$>$get\+Size()} =$>$ returns the size of the plot
+\item {\ttfamily \$plot-\/$>$get\+Id()} =$>$ returns the Id of the plot
+\item {\ttfamily \$plot-\/$>$set\+Owner(string \$owner)} =$>$ sets the owner of the plot if {\ttfamily None} is given the Owner will be set to {\ttfamily N\+U\+LL} which indicates that there is no Owner
+\item {\ttfamily \$plot-\/$>$add\+Member(string \$member)} =$>$ adds a member to the plot, returns true if successful and false if it failed
+\item {\ttfamily \$plot-\/$>$remove\+Member(string \$member)} =$>$ removes a member from the plot, returns true if successful and false if it failed
+\item {\ttfamily \$plot-\/$>$delete()} =$>$ deletes the plot, returns a boolean
+\end{DoxyItemize}
+\item Created a {\ttfamily Location} class (deprecated)\+:
+\begin{DoxyItemize}
+\item 
+\end{DoxyItemize}
+\item Changed datatype to S\+Q\+Lite
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md4}{}\doxysection{2.\+1.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md4}
+
+\begin{DoxyItemize}
+\item Renamed plottool to plotwand
+\item You can now edit the ploteditor item in the config
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md5}{}\doxysection{2.\+2.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md5}
+
+\begin{DoxyItemize}
+\item When you go on a Plot you get a title popup with the name of the plot and the name of the owner.
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md6}{}\doxysection{3.\+0.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md6}
+
+\begin{DoxyItemize}
+\item Created a small economy system\+:
+\begin{DoxyItemize}
+\item {\ttfamily \$plot-\/$>$get\+Price()} =$>$ returns an array of {\ttfamily Item} objects
+\item {\ttfamily \$plot-\/$>$set\+Price(array \$price)} sets the price of a plot
+\item {\ttfamily \$plot-\/$>$can\+Buy(Player \$user)} returns a Boolean based on whether the user can buy the plot or not
+\item {\ttfamily \$plot-\/$>$buy(Player \$buyer)} buys the plot
+\item {\ttfamily \$plot-\/$>$sell(Player \$seller)} sells the plot (W\+IP)
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md7}{}\doxysection{3.\+1.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md7}
+
+\begin{DoxyItemize}
+\item Added a new method {\ttfamily \$plot-\/$>$get\+Array\+Price()}, this returns an array in the following format. {\ttfamily array(\char`\"{}item\+\_\+id\char`\"{} =$>$ \$item\+\_\+id, \char`\"{}count\char`\"{} =$>$ \$count)}
+\item Added the /setprice $<$itemid\+:count$>$ command
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md8}{}\doxysection{3.\+2.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md8}
+
+\begin{DoxyItemize}
+\item Improved the economy system (W\+IP)
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md9}{}\doxysection{3.\+3.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md9}
+
+\begin{DoxyItemize}
+\item Removed all the economy features
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md10}{}\doxysection{4.\+0.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md10}
+
+\begin{DoxyItemize}
+\item Plot detection will also depend on the y-\/coord
+\item Plots now can be linked together to create one giant plot
+\item Added a permission system
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md11}{}\doxysection{4.\+1.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md11}
+
+\begin{DoxyItemize}
+\item Public\+Chests toegevoegd, vanaf nu kan een plot eigenaar een kist openbaar maken. Dit wil zeggen dat iedereen de kist kan openen
+\item Een paar internal changes, de manier waarop een plot wordt verwijderd is veranderd
+\item Grouping methods gemoved naar een andere class (gisteren gedaan)
+\item Command info lijst is nu deels gebaseerd op welke permissions je hebt
+\item Wanneer je een lid toevoegt aan een plot dan krijgt dat lid ook de default plot permissions.
+\item Command permissions gefixt
+\item /plotinfo geeft nu informatie gebaseerd op jouw rang
+\item Er wordt {\ttfamily x}xp afgenomen als je bent verwijderd als eigenaar van een plot
+\item Player\+Permissions worden allemaal ingesteld naar False wanneer een speler geen lid meer is van een plot
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md12}{}\doxysection{4.\+2.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md12}
+
+\begin{DoxyItemize}
+\item Nieuwe static functies in de Plot class, dus nu kan je gewoon {\ttfamily Plot\+::get()} gebruiken ipv {\ttfamily Main\+::get\+Instance()-\/$>$get\+Plot()}
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md13}{}\doxysection{4.\+3.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md13}
+
+\begin{DoxyItemize}
+\item Altay functies verwijderd
+\item Code cleanup
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md14}{}\doxysection{4.\+4.\+0}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md14}
+Deze versie bevat breaking A\+P\+I-\/changes
+\begin{DoxyItemize}
+\item {\ttfamily Plot\+::get(Location \$pos, bool \$grouping)} heeft vanaf nu een extra parameter. Hiermee kan je kiezen als je het plot zelf wilt krijgen of het masterplot van de group wilt krijgen
+\item De manier waarop Grouping werkt is veranderd, vanaf nu moet je niet steeds checken als de Plot gegrouped is. {\ttfamily Plot\+::get()} returned standaard de masterplot
+\item Plots deleten is aangepast, wanneer het plot een masterplot is en deel is van een group dan worden alle subplots verwijderd en de group ook.
+\item Permissions zijn aangepast
+\item De {\ttfamily Main\+::is\+Colliding} method is verwijderd.
+\item Alle deprecated methods zijn verwijderd.
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md15}{}\doxysection{5.\+0.\+0\+B\+E\+TA}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md15}
+
+\begin{DoxyItemize}
+\item Een experimenteel Event\+Caller systeem. Nu kunnen andere plugins acties laten gebeuren wanneer bepaalde events worden getriggered door de Plot Plugin. Gelieve de Wiki te raadplegen om te zien hoe dit werkt.
+\end{DoxyItemize}\hypertarget{md__c_h_a_n_g_e_l_o_g_autotoc_md16}{}\doxysection{5.\+1.\+0\+B\+E\+TA}\label{md__c_h_a_n_g_e_l_o_g_autotoc_md16}
+
+\begin{DoxyItemize}
+\item De {\ttfamily register\+Listener()} method in de Event\+Caller class is nu statisch, ziet er beter uit. 
+\end{DoxyItemize}
