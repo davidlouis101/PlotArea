@@ -22,3 +22,8 @@ Make personal areas for players!
 
 ## Er worden ook nieuwe classes toegevoegd
 - [ ] Member class
+
+## Downloads
+* **Stabiel** https://github.com/Mohagames205/PlotArea/releases
+* **Nieuwste** https://poggit.pmmp.io/ci/Mohagames205/PlotArea
+
