@@ -27,3 +27,6 @@ Make personal areas for players!
 * **Stabiel** https://github.com/Mohagames205/PlotArea/releases
 * **Nieuwste** https://poggit.pmmp.io/ci/Mohagames205/PlotArea
 
+## Support
+* **Discord** https://discord.gg/aa6ThSM
+* **Issue tracker**
