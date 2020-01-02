@@ -576,6 +576,7 @@ class Plot extends PermissionManager
         $res = $stmt->execute();
         $plot = null;
         while ($row = $res->fetchArray()) {
+            $world = null;
             if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
                 $world = $main->getServer()->getLevelByName($row["plot_world"]);
             } elseif ($main->getServer()->isLevelGenerated($row["plot_world"])) {
@@ -602,6 +603,7 @@ class Plot extends PermissionManager
         $stmt->bindParam("plot_name", $name, SQLITE3_TEXT);
         $res = $stmt->execute();
         while ($row = $res->fetchArray()) {
+            $world = null;
             if ($main->getServer()->isLevelLoaded($row["plot_world"])) {
                 $world = $main->getServer()->getLevelByName($row["plot_world"]);
             } elseif ($main->getServer()->isLevelGenerated($row["plot_world"])) {
