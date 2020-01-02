@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Mohagames205/PlotArea.svg?token=33b9XYyKJNCzDYxGkN7H&branch=beta)](https://travis-ci.com/Mohagames205/PlotArea) [![Poggit](https://poggit.pmmp.io/ci.shield/Mohagames205/PlotArea/~)](https://poggit.pmmp.io/ci/Mohagames205/PlotArea/~)
+[![Build Status](https://travis-ci.com/Mohagames205/PlotArea.svg?token=33b9XYyKJNCzDYxGkN7H&branch=beta)](https://travis-ci.com/Mohagames205/PlotArea) [![Poggit](https://poggit.pmmp.io/ci.shield/Mohagames205/PlotArea/~)](https://poggit.pmmp.io/ci/Mohagames205/PlotArea/~) [![Discord](https://img.shields.io/discord/662272650793713664?logo=discord)](https://discord.gg/aa6ThSM)
 
 # PlotArea
 Make personal areas for players!
@@ -27,3 +27,6 @@ Make personal areas for players!
 * **Stabiel** https://github.com/Mohagames205/PlotArea/releases
 * **Nieuwste** https://poggit.pmmp.io/ci/Mohagames205/PlotArea
 
+## Support
+* **Discord** https://discord.gg/aa6ThSM
+* **Issue tracker**
