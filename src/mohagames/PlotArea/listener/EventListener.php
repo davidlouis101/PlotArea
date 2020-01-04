@@ -22,6 +22,7 @@ use pocketmine\block\FenceGate;
 use pocketmine\block\ItemFrame;
 use pocketmine\block\Trapdoor;
 use pocketmine\entity\object\ArmorStand;
+use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEntityEvent;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -32,12 +33,12 @@ class EventListener implements Listener
 
     private $main;
     public $cancelMovement;
+    private $item;
 
     public function __construct()
     {
         $this->main = Main::getInstance();
-        Main::getInstance()->getServer()->getPluginManager()->registerEvents($this, Main::getInstance());
-
+        $this->item = $this->main->getConfig()->get("item_id");
     }
 
     public function chestInteraction(PlayerInteractEvent $e)
@@ -48,14 +49,12 @@ class EventListener implements Listener
             $plot = Plot::get($e->getBlock());
             if ($plot !== null) {
                 if ($plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_CHESTS) || $player->hasPermission("pa.staff.interactbypass") || PublicChest::getChest($block) !== null) {
-                    if (($plot->isMember($player->getName()) || $plot->isOwner($player->getName())) && PublicChest::getChest($block) !== null) {
-                        $player->sendMessage("§cOpgepast! §4U opent een openbare chest.");
-                    }
                     return;
-                } else {
-                    $player->sendPopup("§4U kan deze actie niet uitvoeren.");
-                    $e->setCancelled();
                 }
+
+                $player->sendPopup("§4U kan deze actie niet uitvoeren.");
+                $e->setCancelled();
+
             }
         }
     }
@@ -68,7 +67,7 @@ class EventListener implements Listener
             if ($plot !== null) {
                 $player = $e->getPlayer();
 
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_TRAPDOORS) || $player->hasPermission("pa.staff.interactbypass")) {
+                if ($plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_TRAPDOORS) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
                 }
                 $player->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -86,7 +85,7 @@ class EventListener implements Listener
         if ($block instanceof Door) {
             $plot = Plot::get($block);
             if ($plot !== null) {
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_DOORS) || $player->hasPermission("pa.staff.interactbypass")) {
+                if ($plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_DOORS) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
                 }
                 $player->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -104,7 +103,7 @@ class EventListener implements Listener
         if ($block instanceof FenceGate) {
             $plot = Plot::get($block);
             if ($plot !== null) {
-                if ($plot->getOwner() == strtolower($player->getName()) || $plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_GATES) || $player->hasPermission("pa.staff.interactbypass")) {
+                if ($plot->hasPermission($player->getName(), PermissionManager::PLOT_INTERACT_GATES) || $player->hasPermission("pa.staff.interactbypass")) {
                     return;
                 }
                 $player->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -122,7 +121,7 @@ class EventListener implements Listener
             $plot = Plot::get($block);
             if ($plot !== null) {
                 if ($e->getAction() == PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-                    if ($plot->getOwner() == strtolower($e->getPlayer()->getName()) || $plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ITEMFRAMES) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")) {
+                    if ($plot->hasPermission($e->getPlayer()->getName(), PermissionManager::PLOT_INTERACT_ITEMFRAMES) || $e->getPlayer()->hasPermission("pa.staff.interactbypass")) {
                         return;
                     }
                     $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
@@ -131,6 +130,45 @@ class EventListener implements Listener
                     $e->getPlayer()->sendPopup("§4U kan deze actie niet uitvoeren.");
                     $e->setCancelled();
                 }
+            }
+        }
+    }
+
+    public function plottool(PlayerInteractEvent $event)
+    {
+        if ($event->getItem()->getId() == $this->item && $event->getItem()->getCustomName() == "Plot wand") {
+            $event->setCancelled();
+            if ($event->getAction() == PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+                $block = $event->getBlock();
+                $x = $event->getBlock()->getX();
+                $y = $event->getBlock()->getY();
+                $z = $event->getBlock()->getZ();
+                if (Plot::get($block) == null) {
+                    $this->main->pos_2[$event->getPlayer()->getName()] = array("x" => $x, "y" => $y, "z" => $z);
+                    $event->getPlayer()->sendMessage("§aPOS2: §f(§a" . $x . "§f,§a" . $y . "§f,§a" . $z . "§f)");
+                } else {
+                    $event->getPlayer()->sendMessage("§4Hier staat al een plot");
+                }
+
+            }
+
+        }
+    }
+
+
+    public function plotbreker(BlockBreakEvent $event)
+    {
+        if ($event->getItem()->getId() == $this->item && $event->getItem()->getCustomName() == "Plot wand") {
+            $event->setCancelled();
+            $block = $event->getBlock();
+            $x = $event->getBlock()->getX();
+            $y = $event->getBlock()->getY();
+            $z = $event->getBlock()->getZ();
+            if (Plot::get($block) == null) {
+                $this->main->pos_1[$event->getPlayer()->getName()] = array("x" => $x, "y" => $y, "z" => $z);
+                $event->getPlayer()->sendMessage("§aPOS1: §f(§a" . $x . "§f,§a" . $y . "§f,§a" . $z . "§f)");
+            } else {
+                $event->getPlayer()->sendMessage("§4Hier staat al een plot");
             }
         }
     }
