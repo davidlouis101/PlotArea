@@ -23,7 +23,7 @@ class PlotSetOwnerEvent extends PlotEvent implements Cancellable
     protected $plot;
 
 
-    public function __construct(Plot $plot, string $owner, ?Player $executor = null)
+    public function __construct(Plot $plot, ?string $owner, ?Player $executor = null)
     {
         $this->player = $executor;
         $this->owner = $owner;
@@ -40,7 +40,7 @@ class PlotSetOwnerEvent extends PlotEvent implements Cancellable
         return $this->plot;
     }
 
-    public function getOwner() : string
+    public function getOwner(): ?string
     {
         return $this->owner;
     }
