@@ -19,13 +19,10 @@ use mohagames\PlotArea\utils\Member;
 use mohagames\PlotArea\utils\PermissionManager;
 use mohagames\PlotArea\utils\Plot;
 use mohagames\PlotArea\utils\PublicChest;
-use pocketmine\block\Chest;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
-use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\plugin\PluginBase;
@@ -35,24 +32,21 @@ use SQLite3;
 
 class Main extends PluginBase implements Listener
 {
-    private $pos_1 = array();
-    private $pos_2 = array();
+    public $pos_1 = array();
+    public $pos_2 = array();
     public $db;
     public static $instance;
     public $item;
-    public $chest_register;
-    public $chest_remove;
 
 
     public function onEnable(): void
     {
 
         Main::$instance = $this;
-        new EventListener();
 
         $config = new Config($this->getDataFolder() . "config.yml", -1, array("item_id" => ItemIds::WOODEN_SHOVEL, "plot_popup" => true, "max_members" => 10, "xp-add" => 100, "xp-deduct" => 100));
+        $config->save();
 
-        $this->item = $config->get("item_id");
         $popup = $config->get("plot_popup");
         if ($popup) {
             $this->getScheduler()->scheduleRepeatingTask(new PositioningTask(), 30);
@@ -65,6 +59,7 @@ class Main extends PluginBase implements Listener
         $this->db->query("CREATE TABLE IF NOT EXISTS groups(group_id INTEGER PRIMARY KEY AUTOINCREMENT, group_name TEXT, master_plot TEXT)");
         //dit registreert de events
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 
     }
 
@@ -74,6 +69,7 @@ class Main extends PluginBase implements Listener
      * @param string $label
      * @param array $args
      * @return bool
+     * @throws \ReflectionException
      */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
     {
@@ -481,79 +477,6 @@ class Main extends PluginBase implements Listener
                 return true;
             default:
                 return false;
-        }
-    }
-
-
-    public function plottool(PlayerInteractEvent $event)
-    {
-        if ($event->getItem()->getId() == $this->item && $event->getItem()->getCustomName() == "Plot wand") {
-            $event->setCancelled();
-            if ($event->getAction() == PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-                $block = $event->getBlock();
-                $x = $event->getBlock()->getX();
-                $y = $event->getBlock()->getY();
-                $z = $event->getBlock()->getZ();
-                if (Plot::get($block) == null) {
-                    $this->pos_2[$event->getPlayer()->getName()] = array("x" => $x, "y" => $y, "z" => $z);
-                    $event->getPlayer()->sendMessage("§aPOS2: §f(§a" . $x . "§f,§a" . $y . "§f,§a" . $z . "§f)");
-                } else {
-                    $event->getPlayer()->sendMessage("§4Hier staat al een plot");
-                }
-
-            }
-
-        }
-    }
-
-    public function plotbreker(BlockBreakEvent $event)
-    {
-        if ($event->getItem()->getId() == $this->item && $event->getItem()->getCustomName() == "Plot wand") {
-            $event->setCancelled();
-            $block = $event->getBlock();
-            $x = $event->getBlock()->getX();
-            $y = $event->getBlock()->getY();
-            $z = $event->getBlock()->getZ();
-            if (Plot::get($block) == null) {
-                $this->pos_1[$event->getPlayer()->getName()] = array("x" => $x, "y" => $y, "z" => $z);
-                $event->getPlayer()->sendMessage("§aPOS1: §f(§a" . $x . "§f,§a" . $y . "§f,§a" . $z . "§f)");
-            } else {
-                $event->getPlayer()->sendMessage("§4Hier staat al een plot");
-            }
-        }
-    }
-
-
-    public function chestInteraction(PlayerInteractEvent $e)
-    {
-        $block = $e->getBlock();
-        if ($block instanceof Chest) {
-            if (isset($this->chest_register[$e->getPlayer()->getName()])) {
-                $chest = PublicChest::getChest($block);
-                if ($chest == null) {
-                    $plot = Plot::get($block);
-                    if($plot !== null){
-                        PublicChest::save($block, $block->getLevel(), $plot);
-                        $e->getPlayer()->sendMessage("§aDe kist is openbaar gemaakt!");
-                        $e->setCancelled();
-                    }
-                } else {
-                    $chest->delete();
-                    $e->getPlayer()->sendMessage("§aDe kist is weer privé gemaakt!");
-                }
-                unset($this->chest_register[$e->getPlayer()->getName()]);
-            }
-        }
-    }
-
-    public function chestBreak(BlockBreakEvent $e)
-    {
-        $block = $e->getBlock();
-        if ($block instanceof Chest) {
-            $chest = PublicChest::getChest($block);
-            if ($chest !== null) {
-                $chest->delete();
-            }
         }
     }
 
