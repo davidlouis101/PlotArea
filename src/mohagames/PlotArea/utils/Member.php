@@ -20,10 +20,13 @@ class Member
      * @param string $playername
      * @return bool
      */
-    public static function exists(string $playername)
+    public static function exists(?string $playername)
     {
-        $playername = strtolower($playername);
-        return file_exists("players/$playername.dat");
+        if (!is_null($playername)) {
+            $playername = strtolower($playername);
+            return file_exists("players/$playername.dat");
+        }
+        return false;
 
     }
 
