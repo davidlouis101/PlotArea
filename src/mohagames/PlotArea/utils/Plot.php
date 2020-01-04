@@ -683,7 +683,6 @@ class Plot extends PermissionManager
                 $this->getGroup()->removeFromGroup($this);
             }
         }
-        PublicChest::deleteChests($this);
         $plot_id = $this->getId();
         $stmt = $this->db->prepare("DELETE FROM plots WHERE plot_id = :plot_id");
         $stmt->bindParam("plot_id", $plot_id, SQLITE3_INTEGER);
