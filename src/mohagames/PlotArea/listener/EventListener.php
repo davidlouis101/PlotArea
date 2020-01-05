@@ -38,7 +38,7 @@ class EventListener implements Listener
     public function __construct()
     {
         $this->main = Main::getInstance();
-        $this->item = $this->main->getConfig()->get("item_id");
+        $this->item = $this->main->item;
     }
 
     public function chestInteraction(PlayerInteractEvent $e)
