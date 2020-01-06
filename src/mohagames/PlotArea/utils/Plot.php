@@ -124,16 +124,18 @@ class Plot extends PermissionManager
 
                 $location = $plot->getLocation();
                 $location = $location->calculateCoords();
+
                 $pos1 = $location->getPos1();
                 $pos2 = $location->getPos2();
+
                 $p_x = $position->getFloorX();
                 $p_y = $position->getFloorY();
                 $p_z = $position->getFloorZ();
                 $level = $position->getLevel();
 
-                $res = $pos1["y"] == $pos2["y"];
+                $res = $pos1->getY() == $pos2->getY();
 
-                if (($p_x <= $pos1["x"] && $p_x >= $pos2["x"] && $p_z <= $pos1["z"] && $p_z >= $pos2["z"]) && (($p_y >= $pos1["y"] && $p_y < $pos2["y"]) || $res) && $plot->getLevel()->getName() == $level->getName()) {
+                if (($p_x <= $pos1->getX() && $p_x >= $pos2->getX() && $p_z <= $pos1->getZ() && $p_z >= $pos2->getZ()) && (($p_y >= $pos1->getY() && $p_y < $pos2->getY()) || $res) && $plot->getLevel()->getName() == $level->getName()) {
                     $found_plot = $plot;
                     if ($plot->isGrouped() && $grouping) {
                         $found_plot = $plot->getGroup()->getMasterPlot();
@@ -148,9 +150,9 @@ class Plot extends PermissionManager
     }
 
     /**
-     * Useless at this moment.
-     *
      * @return Plot
+     * @deprecated this method is useless and will be removed
+     *
      */
     public function getPlot() : Plot{
         return $this;
@@ -296,8 +298,8 @@ class Plot extends PermissionManager
         $pos1 = $loc->getPos1();
         $pos2 = $loc->getPos2();
 
-        $x_size = $pos1["x"] - $pos2["x"] + 1;
-        $z_size = $pos1["z"] - $pos2["z"] + 1;
+        $x_size = $pos1->getX() - $pos2->getX() + 1;
+        $z_size = $pos1->getZ() - $pos2->getZ() + 1;
 
         return array($x_size, $z_size);
 
@@ -311,8 +313,8 @@ class Plot extends PermissionManager
     public function getId() : int{
         $worldname = $this->level->getName();
         $conn = $this->db->prepare("SELECT plot_id FROM plots WHERE plot_location = :location AND plot_world = :plot_world");
-        $loc = serialize($this->getLocation()->getLocation());
-        $conn->bindParam("location",$loc , SQLITE3_TEXT);
+        $loc = serialize($this->getLocation()->getArrayedLocation());
+        $conn->bindParam("location", $loc, SQLITE3_TEXT);
         $conn->bindParam("plot_world", $worldname, SQLITE3_TEXT);
         $result = $conn->execute();
         while($row = $result->fetchArray()){

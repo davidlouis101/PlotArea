@@ -210,7 +210,6 @@ class PermissionManager
                     }
                 }
         }
-
     }
 
     public function exists(string $permission){
