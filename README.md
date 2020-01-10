@@ -11,13 +11,13 @@ Make personal areas for players!
 
 ## Een aantal modules worden momenteel herschreven
 - [x] Group class
+- [x] Location
+  - [x] Deze class gaat binnenkort een array van 2 Vector3's returnen, dit is makkelijker om te gebruiken.
 - [ ] Plot class
   - [ ] De manier waarop werelden worden ingeladen en gechecked wordt aangepast.
 - [ ] PermissionManager
   - [ ] Permissions moeten makkelijk kunnen worden toegevoegd en verwijderd
   - [ ] Het huidige flag systeem elimineren
-- [ ] Location
-  - [ ] Deze class gaat binnenkort een array van 2 Vector3's returnen, dit is makkelijker om te gebruiken.
 
 
 ## Er worden ook nieuwe classes toegevoegd
