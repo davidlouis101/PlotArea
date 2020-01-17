@@ -1,37 +1,37 @@
 name: PlotArea
-main: mohagames\PlotArea\Main
+main: Crow\PlotArea\Main
 version: 5.5.0
 api: 3.0.0
-author: Mohagames205
+author: Crow
 load: POSTWORLD
-description: PlotArea, beheer je plots zoals nooit te voren!
+description: verwalten Sie sich plötzlich wie nie zuvor!
 
 commands:
   saveplot:
-    description: Plot opslagen
-    usage: "Usage: /saveplot <plotnaam>"
-    permission: pa.staff.saveplot
+    description: Plot speichern
+    usage: "Usage: /saveplot <plotname>"
+    permission: saveplot.per
   plotinfo:
-    description: Geeft info over een plot
+    description: Bietet Informationen zu einem Grundstück
     usage: "Usage: /plotinfo"
-    permission: pa.plotinfo
+    permission: plot.info.per
   plotwand:
-    description: Plottool
+    description: andere dein rand
     usage: "Usage: /plotwand"
-    permission: pa.staff.plotwand
+    permission: rand.plot.per
   plot:
-    description: Plot instellingen
+    description: Ploteinstellungen
     usage: "Usage: /plot <arg>"
-    permission: pa.plotcmd
+    permission: pa.plotcmd.per
   flushperms:
-    description: "Flushes all the permissions"
+    description: "Löscht alle Berechtigungen"
 
 permissions:
   pa.plotinfo:
-    description: "Geeft info over plot"
+    description: "Bietet Informationen zum Grundstück"
     default: true
   pa.plotcmd:
-    description: "Plot command gebruiken"
+    description: "Verwenden Sie den Befehl plot"
     default: true
   pa.staff:
     default: op
@@ -39,25 +39,25 @@ permissions:
       pa.staff.devinfo:
         default: op
       pa.staff.saveplot:
-        description: "Plot opslagen"
+        description: "Grundstücksläden"
         default: op
       pa.staff.plotwand:
-        description: "plotwand"
+        description: "GS-Rand"
         default: op
       pa.staff.plot.addmember:
-        description: "permissie om lid toe te voegen."
+        description: "Berechtigung zum Hinzufügen eines Mitglieds."
         default: op
       pa.staff.plot.removemember:
-        description: "permissie om lid toe te verwijderen."
+        description: "Erlaubnis, Mitglied zu entfernen."
         default: op
       pa.staff.plot.delete:
-        description: "Een plot deleten"
+        description: "Ein Grundstück löschen"
         default: op
       pa.staff.plot.setowner:
-        description: "Owner instellen"
+        description: "Besitzer festlegen"
         default: op
       pa.staff.plot.setflag:
-        description: Allows the user to use the /plot setflag command
+        description: Ermöglicht dem Benutzer die Verwendung der /plot setflag command
         default: op
       pa.staff.plot.publicchest:
         default: op
