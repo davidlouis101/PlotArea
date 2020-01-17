@@ -78,7 +78,7 @@ class Main extends PluginBase implements Listener
                 $item = ItemFactory::get($this->item);
                 $item->setCustomName("Plot wand");
                 $sender->getInventory()->addItem($item);
-                $sender->sendMessage("§aU hebt een plot wand ontvangen");
+                $sender->sendMessage("§aSie haben eine Grundstücksmauer erhalten");
                 return true;
 
             case "saveplot":
@@ -93,16 +93,16 @@ class Main extends PluginBase implements Listener
                         $p_name = $args[0];
                         if (Plot::getPlotByName($p_name) == null) {
                             Plot::save($p_name, $sender->getLevel(), array($pos1, $pos2));
-                            $sender->sendMessage("§2Het plot §a$p_name §2is succesvol opgeslagen!");
+                            $sender->sendMessage("§2Het plot §a$p_name §2wurde erfolgreich gespeichert!");
                         } else {
-                            $sender->sendMessage("§4Er bestaat al een plot met deze naam");
+                            $sender->sendMessage("§4Ein Grundstück mit diesem Namen existiert bereits");
                         }
                     } else {
-                        $sender->sendMessage("§cU moet een plotnaam opgeven. usage: /saveplot naam");
+                        $sender->sendMessage("§cSie müssen einen Plotnamen eingeben. usage: /saveplot naam");
                     }
 
                 } else {
-                    $sender->sendMessage("U moet de positie van het plot nog bepalen.");
+                    $sender->sendMessage("Sie müssen noch die Position des Plots bestimmen.");
                 }
                 return true;
 
