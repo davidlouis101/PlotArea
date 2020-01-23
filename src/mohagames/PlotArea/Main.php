@@ -12,12 +12,12 @@
 
   Namespace mohagames \ PlotArea;
 
-  use mohagames \ PlotArea \ listener \ EventListener;
-  use mohagames \ PlotArea \ tasks \ PositioningTask;
-  use mohagames \ PlotArea \ utils \ Group;
-  use mohagames \ PlotArea \ utils \ Member;
-  use mohagames \ PlotArea \ utils \ PermissionManager;
-  use mohagames \ PlotArea \ utils \ Plot;
+  use mohagames\ PlotArea\listener\EventListener;
+  use mohagames\PlotArea\tasks\PositioningTask;
+  use mohagames\PlotArea\utils\Group;
+  use mohagames\PlotArea\utils\Member;
+  use mohagames\PlotArea\utils\PermissionManager;
+  use mohagames\PlotArea\utils\Plot;
   use mohagames \ PlotArea \ utils \ PublicChest;
   use pocketmine \ command \ Command;
   use pocketmine \ command \ CommandSender;
