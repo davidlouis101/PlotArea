@@ -1,4 +1,4 @@
-<?  php
+<?php
 
   / **
  * _____ _ _
@@ -10,28 +10,27 @@
  * @author Mohamed El Yousfi
  * /
 
-  Namespace mohagames \ PlotArea;
+Namespace mohagames\PlotArea;
 
-  use mohagames\ PlotArea\listener\EventListener;
-  use mohagames\PlotArea\tasks\PositioningTask;
-  use mohagames\PlotArea\utils\Group;
-  use mohagames\PlotArea\utils\Member;
-  use mohagames\PlotArea\utils\PermissionManager;
-  use mohagames\PlotArea\utils\Plot;
-  use mohagames \ PlotArea \ utils \ PublicChest;
-  use pocketmine \ command \ Command;
-  use pocketmine \ command \ CommandSender;
-  Use pocketmine \ command \ ConsoleCommandSender.
-  use pocketmine \ event \ listener;
-  use pocketmine \ item \ ItemFactory;
-  use pocketmine \ item \ ItemIds;
-  use pocketmine \ plugin \ PluginBase;
-  use pocketmine \ utils \ config;
-  use pocketmine \ utils \ TextFormat;
-  use SQLite3;
+use mohagames\PlotArea\listener\EventListener;
+use mohagames\PlotArea\tasks\PositioningTask;
+use mohagames\PlotArea\utils\Group;
+use mohagames\PlotArea\utils\Member;
+use mohagames\PlotArea\utils\PermissionManager;
+use mohagames\PlotArea\utils\Plot;
+use mohagames\PlotArea \utils\PublicChest;
+use pocketmine\command \Command;
+use pocketmine\command\CommandSender;
+use pocketmine\command\ConsoleCommandSender.
+use pocketmine\event\listener;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
+use pocketmine\ plugin\PluginBase;
+use pocketmine\utils\config;
+use pocketmine\utils\TextFormat;
+use SQLite3;
 
-  Main class extends PluginBase implements listeners
-  {
+Main class extends PluginBase implements listeners {
  public $ pos_1 = array ();
  public $ pos_2 = array ();
  public $ db;
